@@ -8,4 +8,6 @@ include_directories(.)
 add_executable(CS408
         src/SHA256.cpp
         src/SHA256.h
-        src/preprocessing.cpp)
+        src/preprocessing.cpp
+        src/computation.h
+        src/computation.cpp)

@@ -9,6 +9,7 @@
 #include <bitset>
 #include <cmath>
 #include "preprocessing.h"
+#include "computation.h"
 
 using namespace std;
 
