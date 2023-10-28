@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <bitset>
 #include <cmath>
+#include "preprocessing.h"
 
 using namespace std;
 

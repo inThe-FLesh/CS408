@@ -6,5 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(CS408
-        SHA256.cpp
-        SHA256.h)
+        src/SHA256.cpp
+        src/SHA256.h
+        src/preprocessing.cpp)

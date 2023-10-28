@@ -49,12 +49,19 @@ cmake_ninja_workdir = /home/ross/Documents/Year$ 4/CS408/cmake-build-debug/
 
 build cmake_object_order_depends_target_CS408: phony || CMakeFiles/CS408.dir
 
-build CMakeFiles/CS408.dir/SHA256.cpp.o: CXX_COMPILER__CS408_unscanned_Debug /home/ross/Documents/Year$ 4/CS408/SHA256.cpp || cmake_object_order_depends_target_CS408
-  DEP_FILE = CMakeFiles/CS408.dir/SHA256.cpp.o.d
+build CMakeFiles/CS408.dir/src/SHA256.cpp.o: CXX_COMPILER__CS408_unscanned_Debug /home/ross/Documents/Year$ 4/CS408/src/SHA256.cpp || cmake_object_order_depends_target_CS408
+  DEP_FILE = CMakeFiles/CS408.dir/src/SHA256.cpp.o.d
   FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
   INCLUDES = -I"/home/ross/Documents/Year 4/CS408/."
   OBJECT_DIR = CMakeFiles/CS408.dir
-  OBJECT_FILE_DIR = CMakeFiles/CS408.dir
+  OBJECT_FILE_DIR = CMakeFiles/CS408.dir/src
+
+build CMakeFiles/CS408.dir/src/preprocessing.cpp.o: CXX_COMPILER__CS408_unscanned_Debug /home/ross/Documents/Year$ 4/CS408/src/preprocessing.cpp || cmake_object_order_depends_target_CS408
+  DEP_FILE = CMakeFiles/CS408.dir/src/preprocessing.cpp.o.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  INCLUDES = -I"/home/ross/Documents/Year 4/CS408/."
+  OBJECT_DIR = CMakeFiles/CS408.dir
+  OBJECT_FILE_DIR = CMakeFiles/CS408.dir/src
 
 
 # =============================================================================
@@ -64,7 +71,7 @@ build CMakeFiles/CS408.dir/SHA256.cpp.o: CXX_COMPILER__CS408_unscanned_Debug /ho
 #############################################
 # Link the executable CS408
 
-build CS408: CXX_EXECUTABLE_LINKER__CS408_Debug CMakeFiles/CS408.dir/SHA256.cpp.o
+build CS408: CXX_EXECUTABLE_LINKER__CS408_Debug CMakeFiles/CS408.dir/src/SHA256.cpp.o CMakeFiles/CS408.dir/src/preprocessing.cpp.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/CS408.dir
   POST_BUILD = :
