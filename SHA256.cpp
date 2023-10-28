@@ -4,7 +4,7 @@
 
 #include "SHA256.h"
 
-void string_to_int(const string& str, bitset<8> bits[]){
+void string_to_binary(const string& str, bitset<8> bits[]){
     // breaks up each word in the string to an 8-bit binary number and adds them to  the array
     for(int i = 0; i < str.length(); i++){
         bits[i] =  bitset<8>(str[i]);
@@ -28,7 +28,7 @@ int main(){
     bitset<8> bits[12];
     bitset<32> paddedBits[16];
 
-    string_to_int(str, bits);
+    string_to_binary(str, bits);
 
     /*for (int i = 0; i < str.length(); i++){
         cout<<bits[i] << " ";
