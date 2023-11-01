@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/CS408.dir/src/SHA256.cpp.o CMakeFiles/CS408.dir/src/preprocessing.cpp.o CMakeFiles/CS408.dir/src/computation.cpp.o -o CS408 

@@ -82,3 +82,15 @@ struct INITIAL_K_VALUES{
     unsigned int k63 = 0xc67178f2;
 };
 
+/*
+ * function that takes a 32-bit number and right shifts it by n
+ * initially shifts the bits right
+ * then shifts left by 32 - n to ensure the ones at the end are rotated to the beginning
+ * xor at the end to combine the right and left
+*/
+
+bitset<32> right_rotation(bitset<32> bits, int n){
+    bitset<32> shiftedBits = bits >> n;
+    bitset<32> rotatedBits = bits << 32 - n;
+    return shiftedBits ^ rotatedBits;
+}
