@@ -13,6 +13,8 @@ using namespace std;
 
 void compute_hash(bitset<32> W[], u_int32_t hArr[]);
 
+bitset<32> right_rotation(bitset<32> bits, int n);
+
 void prepare_message_schedule(bitset<32> schedule[], bitset<32> paddedBits[]);
 
 void build_message_schedule(bitset<32> schedule[]);

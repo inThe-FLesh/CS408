@@ -5,8 +5,10 @@
 #include "SHA256.h"
 
 int main(){
-    string str = "Password123";
-    bitset<8> bits[11];
+    string str = "";
+    cout << "Enter String: ";
+    cin >> str;
+    bitset<8> bits[str.size()];
     bitset<32> paddedBits[16];
 
 
