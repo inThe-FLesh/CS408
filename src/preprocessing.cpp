@@ -49,7 +49,7 @@ void pad_binary(bitset<32> paddedBits[], bitset<8> bits[], int size){
 }
 
 // Uses the last 64 bits in order to record the length of the original message.
-void add_length(bitset<32> paddedBits[], int sizeBits){
+void add_length_bits(bitset<32> paddedBits[], int sizeBits){
     bitset<64> lengthBits = sizeBits;
     bitset<64> divider = 0xFFFFFFFF00000000;
 

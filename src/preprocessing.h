@@ -15,7 +15,8 @@ void string_to_binary(const string& str, bitset<8> bits[]);
 
 void pad_binary(bitset<32> paddedBits[], bitset<8> bits[], int size);
 
-void add_length(bitset<32> paddedBits[], int sizeBits);
+void add_length_bits(bitset<32> paddedBits[], int sizeBits);
+
 
 
 
