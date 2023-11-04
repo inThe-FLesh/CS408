@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void compute_hash(bitset<32> W[], ulong hArr[]);
+void compute_hash(bitset<32> W[], u_int32_t hArr[]);
 
 void prepare_message_schedule(bitset<32> schedule[], bitset<32> paddedBits[]);
 
