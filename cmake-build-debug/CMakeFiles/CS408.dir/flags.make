@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/ross/Documents/Year4/CPUSHA256/CPU256/.
+CXX_INCLUDES = -I"/home/ross/Documents/Year 4/CS408/CS408/."
 
 CXX_FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
 
