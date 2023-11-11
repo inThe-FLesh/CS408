@@ -9,7 +9,8 @@
 #include <bitset>
 #include <cmath>
 
-using namespace std;
+using std::string;
+using std::bitset;
 
 void string_to_binary(const string& str, bitset<8> bits[]);
 

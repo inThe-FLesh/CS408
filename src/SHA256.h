@@ -11,7 +11,12 @@
 #include "preprocessing.h"
 #include "computation.h"
 
-using namespace std;
+using std::string;
+using std::cout;
+using std::cin;
+using std::setfill;
+using std::setw;
+using std::hex;
 
 
 class SHA256 {
