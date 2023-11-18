@@ -18,22 +18,25 @@ int main(){
 
     string_to_binary(str, bits);
 
-    /*for (int i = 0; i < str.length(); i++){
+    for (int i = 0; i < str.length(); i++){
         cout<<bits[i] << " ";
-    }*/
+    }
 
     pad_binary(paddedBits, bits, sizeof(bits));
 
-    /*cout<< endl <<paddedBits[0] << endl;
-    cout<<paddedBits[1] << endl;
-    cout<<paddedBits[2] << endl;
-    cout<<paddedBits[3] << endl;*/
+    cout << endl << "Padded Bits" << endl;
+
+    for (bitset<32> p : paddedBits){
+        cout<< p << endl;
+    }
 
     add_length_bits(paddedBits, sizeof (bits));
 
-    /*for (bitset<32> p : paddedBits){
+    cout << "Length Bits" << endl;
+
+    for (bitset<32> p : paddedBits){
         cout<< p << endl;
-    }*/
+    }
 
     bitset<32> schedule[64];
 
@@ -41,7 +44,11 @@ int main(){
 
     compute_hash(schedule, hArr);
 
+    cout << "hash" << endl;
+
     for (ulong h : hArr){
         cout << setfill('0') << hex << setw(8) << h;
     }
+
+  cout << endl;
 }

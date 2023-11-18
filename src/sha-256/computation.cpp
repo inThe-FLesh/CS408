@@ -113,19 +113,12 @@ void compute_hash(bitset<32> W[], u_int32_t hArr[]){
 }
 
 bitset<32> right_rotation(bitset<32> bits, int n){
-    try {
-        if (n <= 32) {
-            bitset<32> shiftedBits = bits >> n;
-            bitset<32> rotatedBits = bits << 32 - n;
-            return shiftedBits ^ rotatedBits;
-        } else
-            throw (n);
+  // modulo 32 to ensure that ot can't ever shift more places than there are bits
+  n = n % 32;
 
-
-    }
-    catch (int n){
-        cout << "Number must be smaller than 32. Number provided: " << n << endl;
-    }
+  bitset<32> shiftedBits = bits >> n;
+  bitset<32> rotatedBits = bits << 32 - n;
+  return shiftedBits ^ rotatedBits;
 }
 
 void prepare_message_schedule(bitset<32> schedule[], bitset<32> paddedBits[]){

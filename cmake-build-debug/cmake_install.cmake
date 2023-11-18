@@ -1,4 +1,4 @@
-# Install script for directory: /home/ross/Documents/Year4/CPUSHA256/CPU256
+# Install script for directory: /home/diogenes/Documents/Computing/CS408/sha256/CS408
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ross/Documents/Year4/CPUSHA256/CPU256/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
