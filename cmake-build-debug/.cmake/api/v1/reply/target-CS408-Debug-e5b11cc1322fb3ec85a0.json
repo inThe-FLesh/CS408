@@ -49,7 +49,7 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/ross/Documents/Year 4/CS408/CS408/."
+					"path" : "/home/ross/Documents/Year4/CS408/CS408/."
 				}
 			],
 			"language" : "CXX",
@@ -117,29 +117,29 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/SHA256.cpp",
+			"path" : "src/sha-256/SHA256.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/SHA256.h",
+			"path" : "src/sha-256/SHA256.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/preprocessing.cpp",
+			"path" : "src/sha-256/preprocessing.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/computation.h",
+			"path" : "src/sha-256/computation.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/computation.cpp",
+			"path" : "src/sha-256/computation.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

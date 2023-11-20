@@ -35,7 +35,7 @@ int main() {
     int count = 0;
 
     auto now = std::chrono::steady_clock::now;
-    duration executeTime = 1s;
+    duration<long> executeTime = 1s;
     auto start = now();
 
     while ((now() - start) < executeTime){

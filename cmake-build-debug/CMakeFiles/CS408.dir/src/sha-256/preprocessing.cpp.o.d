@@ -1,7 +1,7 @@
-CMakeFiles/CS408.dir/src/SHA256.cpp.o: \
- /home/ross/Documents/Year\ 4/CS408/CS408/src/SHA256.cpp \
+CMakeFiles/CS408.dir/src/sha-256/preprocessing.cpp.o: \
+ /home/ross/Documents/Year4/CS408/CS408/src/sha-256/preprocessing.cpp \
  /usr/include/stdc-predef.h \
- /home/ross/Documents/Year\ 4/CS408/CS408/src/SHA256.h \
+ /home/ross/Documents/Year4/CS408/CS408/src/sha-256/preprocessing.h \
  /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -168,6 +168,4 @@ CMakeFiles/CS408.dir/src/SHA256.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
- /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /home/ross/Documents/Year\ 4/CS408/CS408/src/preprocessing.h \
- /home/ross/Documents/Year\ 4/CS408/CS408/src/computation.h
+ /usr/include/x86_64-linux-gnu/bits/iscanonical.h

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Install script for directory: /home/diogenes/Documents/Computing/CS408/sha256/CS408
-=======
-# Install script for directory: /home/ross/Documents/Year 4/CS408/CS408
->>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
+# Install script for directory: /home/ross/Documents/Year4/CS408/CS408
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -43,7 +39,7 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/objdump")
+  set(CMAKE_OBJDUMP "/bin/objdump")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -54,9 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-<<<<<<< HEAD
-file(WRITE "/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
-=======
-file(WRITE "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
->>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
+file(WRITE "/home/ross/Documents/Year4/CS408/CS408/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

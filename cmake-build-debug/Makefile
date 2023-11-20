@@ -57,17 +57,10 @@ RM = /snap/clion/250/bin/cmake/linux/x64/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-<<<<<<< HEAD
-CMAKE_SOURCE_DIR = /home/diogenes/Documents/Computing/CS408/sha256/CS408
+CMAKE_SOURCE_DIR = /home/ross/Documents/Year4/CS408/CS408
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug
-=======
-CMAKE_SOURCE_DIR = "/home/ross/Documents/Year 4/CS408/CS408"
-
-# The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"
->>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
+CMAKE_BINARY_DIR = /home/ross/Documents/Year4/CS408/CS408/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -94,15 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-<<<<<<< HEAD
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/CMakeFiles /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ross/Documents/Year4/CS408/CS408/cmake-build-debug/CMakeFiles /home/ross/Documents/Year4/CS408/CS408/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/CMakeFiles 0
-=======
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/CMakeFiles" "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug//CMakeFiles/progress.marks"
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/CMakeFiles" 0
->>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ross/Documents/Year4/CS408/CS408/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -142,77 +129,77 @@ CS408/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/build
 .PHONY : CS408/fast
 
-src/SHA256.o: src/SHA256.cpp.o
-.PHONY : src/SHA256.o
+src/sha-256/SHA256.o: src/sha-256/SHA256.cpp.o
+.PHONY : src/sha-256/SHA256.o
 
 # target to build an object file
-src/SHA256.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/SHA256.cpp.o
-.PHONY : src/SHA256.cpp.o
+src/sha-256/SHA256.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/SHA256.cpp.o
+.PHONY : src/sha-256/SHA256.cpp.o
 
-src/SHA256.i: src/SHA256.cpp.i
-.PHONY : src/SHA256.i
+src/sha-256/SHA256.i: src/sha-256/SHA256.cpp.i
+.PHONY : src/sha-256/SHA256.i
 
 # target to preprocess a source file
-src/SHA256.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/SHA256.cpp.i
-.PHONY : src/SHA256.cpp.i
+src/sha-256/SHA256.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/SHA256.cpp.i
+.PHONY : src/sha-256/SHA256.cpp.i
 
-src/SHA256.s: src/SHA256.cpp.s
-.PHONY : src/SHA256.s
+src/sha-256/SHA256.s: src/sha-256/SHA256.cpp.s
+.PHONY : src/sha-256/SHA256.s
 
 # target to generate assembly for a file
-src/SHA256.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/SHA256.cpp.s
-.PHONY : src/SHA256.cpp.s
+src/sha-256/SHA256.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/SHA256.cpp.s
+.PHONY : src/sha-256/SHA256.cpp.s
 
-src/computation.o: src/computation.cpp.o
-.PHONY : src/computation.o
+src/sha-256/computation.o: src/sha-256/computation.cpp.o
+.PHONY : src/sha-256/computation.o
 
 # target to build an object file
-src/computation.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/computation.cpp.o
-.PHONY : src/computation.cpp.o
+src/sha-256/computation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/computation.cpp.o
+.PHONY : src/sha-256/computation.cpp.o
 
-src/computation.i: src/computation.cpp.i
-.PHONY : src/computation.i
+src/sha-256/computation.i: src/sha-256/computation.cpp.i
+.PHONY : src/sha-256/computation.i
 
 # target to preprocess a source file
-src/computation.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/computation.cpp.i
-.PHONY : src/computation.cpp.i
+src/sha-256/computation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/computation.cpp.i
+.PHONY : src/sha-256/computation.cpp.i
 
-src/computation.s: src/computation.cpp.s
-.PHONY : src/computation.s
+src/sha-256/computation.s: src/sha-256/computation.cpp.s
+.PHONY : src/sha-256/computation.s
 
 # target to generate assembly for a file
-src/computation.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/computation.cpp.s
-.PHONY : src/computation.cpp.s
+src/sha-256/computation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/computation.cpp.s
+.PHONY : src/sha-256/computation.cpp.s
 
-src/preprocessing.o: src/preprocessing.cpp.o
-.PHONY : src/preprocessing.o
+src/sha-256/preprocessing.o: src/sha-256/preprocessing.cpp.o
+.PHONY : src/sha-256/preprocessing.o
 
 # target to build an object file
-src/preprocessing.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/preprocessing.cpp.o
-.PHONY : src/preprocessing.cpp.o
+src/sha-256/preprocessing.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/preprocessing.cpp.o
+.PHONY : src/sha-256/preprocessing.cpp.o
 
-src/preprocessing.i: src/preprocessing.cpp.i
-.PHONY : src/preprocessing.i
+src/sha-256/preprocessing.i: src/sha-256/preprocessing.cpp.i
+.PHONY : src/sha-256/preprocessing.i
 
 # target to preprocess a source file
-src/preprocessing.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/preprocessing.cpp.i
-.PHONY : src/preprocessing.cpp.i
+src/sha-256/preprocessing.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/preprocessing.cpp.i
+.PHONY : src/sha-256/preprocessing.cpp.i
 
-src/preprocessing.s: src/preprocessing.cpp.s
-.PHONY : src/preprocessing.s
+src/sha-256/preprocessing.s: src/sha-256/preprocessing.cpp.s
+.PHONY : src/sha-256/preprocessing.s
 
 # target to generate assembly for a file
-src/preprocessing.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/preprocessing.cpp.s
-.PHONY : src/preprocessing.cpp.s
+src/sha-256/preprocessing.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/CS408.dir/build.make CMakeFiles/CS408.dir/src/sha-256/preprocessing.cpp.s
+.PHONY : src/sha-256/preprocessing.cpp.s
 
 # Help Target
 help:
@@ -223,15 +210,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... CS408"
-	@echo "... src/SHA256.o"
-	@echo "... src/SHA256.i"
-	@echo "... src/SHA256.s"
-	@echo "... src/computation.o"
-	@echo "... src/computation.i"
-	@echo "... src/computation.s"
-	@echo "... src/preprocessing.o"
-	@echo "... src/preprocessing.i"
-	@echo "... src/preprocessing.s"
+	@echo "... src/sha-256/SHA256.o"
+	@echo "... src/sha-256/SHA256.i"
+	@echo "... src/sha-256/SHA256.s"
+	@echo "... src/sha-256/computation.o"
+	@echo "... src/sha-256/computation.i"
+	@echo "... src/sha-256/computation.s"
+	@echo "... src/sha-256/preprocessing.o"
+	@echo "... src/sha-256/preprocessing.i"
+	@echo "... src/sha-256/preprocessing.s"
 .PHONY : help
 
 
