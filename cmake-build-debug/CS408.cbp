@@ -8,6 +8,7 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
+<<<<<<< HEAD
 				<Option working_dir="/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
@@ -20,11 +21,29 @@
 			<Target title="CS408">
 				<Option output="/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/CS408" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug"/>
+=======
+				<Option working_dir="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="CS408">
+				<Option output="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/CS408" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"/>
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+<<<<<<< HEAD
 					<Add directory="/home/diogenes/Documents/Computing/CS408/sha256/CS408/."/>
+=======
+					<Add directory="/home/ross/Documents/Year 4/CS408/CS408/."/>
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 					<Add directory="/usr/include/c++/11"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
 					<Add directory="/usr/include/c++/11/backward"/>
@@ -34,6 +53,7 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
+<<<<<<< HEAD
 					<Build command="/usr/bin/gmake -j12 -f &quot;/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 CS408"/>
 					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -43,11 +63,26 @@
 			<Target title="CS408/fast">
 				<Option output="/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/CS408" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug"/>
+=======
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 CS408"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="CS408/fast">
+				<Option output="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/CS408" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"/>
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+<<<<<<< HEAD
 					<Add directory="/home/diogenes/Documents/Computing/CS408/sha256/CS408/."/>
+=======
+					<Add directory="/home/ross/Documents/Year 4/CS408/CS408/."/>
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 					<Add directory="/usr/include/c++/11"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/11"/>
 					<Add directory="/usr/include/c++/11/backward"/>
@@ -57,6 +92,7 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
+<<<<<<< HEAD
 					<Build command="/usr/bin/gmake -j12 -f &quot;/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 CS408/fast"/>
 					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
@@ -103,6 +139,54 @@
 			<Option target="CS408"/>
 		</Unit>
 		<Unit filename="/home/diogenes/Documents/Computing/CS408/sha256/CS408/CMakeLists.txt">
+=======
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 CS408/fast"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/ross/Documents/Year\ 4/CS408/CS408/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/src/SHA256.cpp">
+			<Option target="CS408"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/src/SHA256.h">
+			<Option target="CS408"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/src/computation.cpp">
+			<Option target="CS408"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/src/computation.h">
+			<Option target="CS408"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/src/preprocessing.cpp">
+			<Option target="CS408"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/src/preprocessing.h">
+			<Option target="CS408"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year 4/CS408/CS408/CMakeLists.txt">
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

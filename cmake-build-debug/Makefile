@@ -57,10 +57,17 @@ RM = /snap/clion/250/bin/cmake/linux/x64/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
+<<<<<<< HEAD
 CMAKE_SOURCE_DIR = /home/diogenes/Documents/Computing/CS408/sha256/CS408
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug
+=======
+CMAKE_SOURCE_DIR = "/home/ross/Documents/Year 4/CS408/CS408"
+
+# The top-level build directory on which CMake was run.
+CMAKE_BINARY_DIR = "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug"
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +94,15 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
+<<<<<<< HEAD
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/CMakeFiles /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/CMakeFiles 0
+=======
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/CMakeFiles" "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug//CMakeFiles/progress.marks"
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/CMakeFiles" 0
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 .PHONY : all
 
 # The main clean target

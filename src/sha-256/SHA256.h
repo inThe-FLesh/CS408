@@ -4,19 +4,24 @@
 
 #ifndef CS408_SHA256_H
 #define CS408_SHA256_H
-#include <iostream>
-#include <iomanip>
+#include "computation.h"
+#include "preprocessing.h"
 #include <bitset>
 #include <cmath>
-#include "preprocessing.h"
-#include "computation.h"
+#include <iomanip>
+#include <iostream>
+#include <chrono>
 
-using namespace std;
+using namespace std::chrono;
+using namespace std::chrono_literals;
+using std::cin;
+using std::cout;
+using std::hex;
+using std::setfill;
+using std::setw;
+using std::string;
+using std::dec;
 
+class SHA256 {};
 
-class SHA256 {
-
-};
-
-
-#endif //CS408_SHA256_H
+#endif // CS408_SHA256_H

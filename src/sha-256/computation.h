@@ -9,7 +9,9 @@
 #include <bitset>
 #include <cmath>
 
-using namespace std;
+using std::bitset;
+using std::cout;
+using std::endl;
 
 void compute_hash(bitset<32> W[], u_int32_t hArr[]);
 

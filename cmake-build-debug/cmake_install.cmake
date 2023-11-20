@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Install script for directory: /home/diogenes/Documents/Computing/CS408/sha256/CS408
+=======
+# Install script for directory: /home/ross/Documents/Year 4/CS408/CS408
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +54,9 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
+<<<<<<< HEAD
 file(WRITE "/home/diogenes/Documents/Computing/CS408/sha256/CS408/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+=======
+file(WRITE "/home/ross/Documents/Year 4/CS408/CS408/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+>>>>>>> 413f44b86eb034ccaa86f7295b86ccb5424073b1
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
