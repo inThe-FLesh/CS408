@@ -4,46 +4,47 @@
 
 #include "SHA256.h"
 
-void sha(string str){
-    bitset<8> bits[str.size()];
-    bitset<32> paddedBits[16];
+void sha(string str) {
+  bitset<8> bits[str.size()];
+  bitset<32> paddedBits[16];
 
-    uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-                       0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
+  uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
-    string_to_binary(str, bits);
+  string_to_binary(str, bits);
 
-    pad_binary(paddedBits, bits, sizeof(bits));
+  pad_binary(paddedBits, bits, sizeof(bits));
 
-    add_length_bits(paddedBits, sizeof(bits));
+  add_length_bits(paddedBits, sizeof(bits));
 
-    bitset<32> schedule[64];
+  bitset<32> schedule[64];
 
-    prepare_message_schedule(schedule, paddedBits);
+  prepare_message_schedule(schedule, paddedBits);
 
-    compute_hash(schedule, hArr);
+  compute_hash(schedule, hArr);
 
-    for (ulong h : hArr) {
-        cout << setfill('0') << hex << setw(8) << h;
-    }
+  /*for (ulong h : hArr) {
+      cout << setfill('0') << hex << setw(8) << h;
+  }
 
-    cout << endl;
+  cout << endl;*/
 }
 
 int main() {
-    string strArr[] = {"password123", "12345", "zorgLover123"};
-    int count = 0;
+  string strArr[] = {"password123", "12345", "zorgLover123"};
+  int count = 0;
 
-    auto now = std::chrono::steady_clock::now;
-    duration<long> executeTime = 1s;
-    auto start = now();
+  // solution for timer found on stack overflow
+  auto now = std::chrono::steady_clock::now;
+  duration<long> executeTime = 1s;
+  auto start = now();
 
-    while ((now() - start) < executeTime){
-        for(string str : strArr){
-            sha(str);
-            count += 1;
-        }
+  while ((now() - start) < executeTime) {
+    for (string str : strArr) {
+      sha(str);
+      count += 1;
     }
+  }
 
-    cout << "Hashes per second: " << dec << count << endl;
+  cout << "Hashes per second: " << dec << count << endl;
 }
