@@ -1,7 +1,8 @@
 //
 // Created by ross on 28/10/23.
 //
-#include "computation.h"
+#include "computation.cuh"
+
 /*
  * function that takes a 32-bit number and right shifts it by n
  * initially shifts the bits right
@@ -9,8 +10,7 @@
  * beginning xor at the end to combine the right and left
  */
 
-void compute_hash(bitset<32> W[], uint32_t hArr[]) {
-
+__global__ void cuda_compute(bitset<32> schedules[][64], uint32_t hArrs[][64]) {
   // declaring variables for computation
   uint32_t a = 0x6a09e667;
   uint32_t b = 0xbb67ae85;
@@ -34,7 +34,9 @@ void compute_hash(bitset<32> W[], uint32_t hArr[]) {
       0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
       0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-  // computation beginning
+  int index = threadIdx.x;
+
+  bitset<32> W[64];
 
   for (int t = 0; t < 64; t++) {
     uint32_t T1 =
@@ -51,14 +53,14 @@ void compute_hash(bitset<32> W[], uint32_t hArr[]) {
     a = (T1 + T2) % 4294967296;
   }
 
-  hArr[0] += a;
-  hArr[1] += b;
-  hArr[2] += c;
-  hArr[3] += d;
-  hArr[4] += e;
-  hArr[5] += f;
-  hArr[6] += g;
-  hArr[7] += h;
+  hArrs[0][index] += a;
+  hArrs[1][index] += b;
+  hArrs[2][index] += c;
+  hArrs[3][index] += d;
+  hArrs[4][index] += e;
+  hArrs[5][index] += f;
+  hArrs[6][index] += g;
+  hArrs[7][index] += h;
 }
 
 bitset<32> right_rotation(bitset<32> bits, int n) {
@@ -83,7 +85,6 @@ void build_message_schedule(bitset<32> W[]) {
   for (int t = 16; t <= 63; t++) {
     W[t] = sigma_one(W[t - 2]) + (W[t - 7]).to_ulong() + sigma_zero(W[t - 15]) +
            (W[t - 16]).to_ulong();
-    cout << W[t].to_ulong() << endl;
   }
 }
 
@@ -101,26 +102,36 @@ ulong sigma_one(bitset<32> bits) {
   return sigmaReturn;
 }
 
-ulong big_sigma_zero(bitset<32> bits) {
-  ulong sigmaReturn = (right_rotation(bits, 2)).to_ulong() ^
-                      (right_rotation(bits, 13)).to_ulong() ^
-                      (right_rotation(bits, 22)).to_ulong();
+__device__ ulong big_sigma_zero(ulong bits) {
+  ulong sigmaReturn = (device_right_rotation(bits, 2)) ^
+                      (device_right_rotation(bits, 13)) ^
+                      (device_right_rotation(bits, 22));
   return sigmaReturn;
 }
 
-ulong big_sigma_one(bitset<32> bits) {
-  ulong sigmaReturn = (right_rotation(bits, 6)).to_ulong() ^
-                      (right_rotation(bits, 11)).to_ulong() ^
-                      (right_rotation(bits, 25)).to_ulong();
+__device__ ulong big_sigma_one(ulong bits) {
+  ulong sigmaReturn = (device_right_rotation(bits, 6)) ^
+                      (device_right_rotation(bits, 11)) ^
+                      (device_right_rotation(bits, 25));
   return sigmaReturn;
 }
 
-ulong choose(bitset<32> x, bitset<32> y, bitset<32> z) {
+__device__ ulong choose(uint32_t x, uint32_t y, uint32_t z) {
   bitset<32> chooseReturn = (x & y) ^ (~x & z);
   return chooseReturn.to_ulong();
 }
 
-ulong majority(bitset<32> x, bitset<32> y, bitset<32> z) {
+__device__ ulong majority(uint32_t x, uint32_t y, uint32_t z) {
   bitset<32> majorityReturn = (x & y) ^ (x & z) ^ (y & z);
   return majorityReturn.to_ulong();
+}
+
+__device__ uint32_t device_right_rotation(ulong bits, int n) {
+  // modulo 32 to ensure that ot can't ever shift more places than there are
+  // bits
+  n = n % 32;
+
+  uint32_t shiftedBits = bits >> n;
+  uint32_t rotatedBits = bits << (32 - n);
+  return shiftedBits ^ rotatedBits;
 }

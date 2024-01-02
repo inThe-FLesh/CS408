@@ -2,7 +2,7 @@
 // Created by ross on 28/10/23.
 //
 
-#include "preprocessing.h"
+#include "preprocessing.cuh"
 
 // Convert the string into binary representation. 8 bits per character.
 void string_to_binary(const string &str, bitset<8> bits[]) {

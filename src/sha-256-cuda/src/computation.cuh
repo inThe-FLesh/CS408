@@ -9,12 +9,13 @@
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
+#include <sys/types.h>
 
 using std::bitset;
 using std::cout;
 using std::endl;
 
-void compute_hash(bitset<32> W[], u_int32_t hArr[]);
+__global__ void cuda_compute(uint32_t W[][64], uint32_t hArr[][64]);
 
 bitset<32> right_rotation(bitset<32> bits, int n);
 
@@ -26,13 +27,15 @@ ulong sigma_zero(bitset<32> bits);
 
 ulong sigma_one(bitset<32> bits);
 
-ulong big_sigma_zero(bitset<32> bits);
+__device__ ulong big_sigma_zero(ulong bits);
 
-ulong big_sigma_one(bitset<32> bits);
+__device__ ulong big_sigma_one(ulong bits);
 
-ulong choose(bitset<32> x, bitset<32> y, bitset<32> z);
+__device__ ulong choose(bitset<32> x, bitset<32> y, bitset<32> z);
 
-ulong majority(bitset<32> x, bitset<32> y, bitset<32> z);
+__device__ ulong majority(bitset<32> x, bitset<32> y, bitset<32> z);
+
+__device__ bitset<32> device_right_rotation(bitset<32> bits, int n);
 
 class computation {};
 

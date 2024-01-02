@@ -1,0 +1,9 @@
+# ninja log v5
+1	1399	1701227065141698921	CMakeFiles/sha_256_cuda.dir/src/preprocessing.cu.o	b9cecaca416af727
+1	1480	1701223729062920877	CMakeFiles/sha_256_cuda.dir/src/main.cu.o	4ed16bd790232296
+1392	1419	1701227332149126742	CMakeFiles/sha_256_cuda.dir/cmake_device_link.o	8a4c1c5cf2d9b3c
+0	10	1701227457354764430	build.ninja	a482c3b8da00cc2e
+1419	1472	1701227332201127419	sha_256_cuda	f3cc09b0b8bad9c6
+1	1555	1701227065297700891	CMakeFiles/sha_256_cuda.dir/src/sha256Cuda.cu.o	f187e82ff99becdb
+0	1211	1701214723179825859	CMakeFiles/sha_256_cuda.dir/main.cu.o	e8f429f30a47267b
+1	1392	1701227332121126377	CMakeFiles/sha_256_cuda.dir/src/computation.cu.o	873c0bef79ff6a19

@@ -15,6 +15,10 @@ void sha(string str) {
 
   pad_binary(paddedBits, bits, sizeof(bits));
 
+  /*for (bitset<32> pad : paddedBits){
+      cout << pad << endl;
+  }*/
+
   add_length_bits(paddedBits, sizeof(bits));
 
   bitset<32> schedule[64];
@@ -23,15 +27,15 @@ void sha(string str) {
 
   compute_hash(schedule, hArr);
 
-  /*for (ulong h : hArr) {
-      cout << setfill('0') << hex << setw(8) << h;
+  for (ulong h : hArr) {
+    cout << setfill('0') << hex << setw(8) << h;
   }
 
-  cout << endl;*/
+  cout << endl;
 }
 
 int main() {
-  string strArr[] = {"password123", "12345", "zorgLover123"};
+  string strArr[] = {"RedBlockBlue", "12345", "zorgLover123"};
   int count = 0;
 
   // solution for timer found on stack overflow
