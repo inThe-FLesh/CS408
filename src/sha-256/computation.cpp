@@ -83,7 +83,6 @@ void build_message_schedule(bitset<32> W[]) {
   for (int t = 16; t <= 63; t++) {
     W[t] = sigma_one(W[t - 2]) + (W[t - 7]).to_ulong() + sigma_zero(W[t - 15]) +
            (W[t - 16]).to_ulong();
-    cout << W[t].to_ulong() << endl;
   }
 }
 

@@ -7,20 +7,22 @@
 #include "computation.h"
 #include "preprocessing.h"
 #include <bitset>
+#include <chrono>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <chrono>
+#include <string>
 
 using namespace std::chrono;
 using namespace std::chrono_literals;
 using std::cin;
 using std::cout;
+using std::dec;
 using std::hex;
 using std::setfill;
 using std::setw;
 using std::string;
-using std::dec;
+using std::to_string;
 
 class SHA256 {};
 

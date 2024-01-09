@@ -1,8 +1,12 @@
 //
 // Created by ross on 27/10/23.
 //
+//
+// Added testString to allow second marker to review discrete steps. This is not
+// present in the dev version.
 
 #include "SHA256.h"
+#include <cstring>
 
 void sha(string str) {
   bitset<8> bits[str.size()];
@@ -15,17 +19,45 @@ void sha(string str) {
 
   pad_binary(paddedBits, bits, sizeof(bits));
 
-  /*for (bitset<32> pad : paddedBits){
+  if (str == "testString") {
+    cout << "----Padded----" << endl;
+
+    for (bitset<32> pad : paddedBits) {
       cout << pad << endl;
-  }*/
+    }
+
+    cout << endl;
+  }
 
   add_length_bits(paddedBits, sizeof(bits));
+
+  if (str == "testString") {
+    cout << "----Length Bits----" << endl;
+    for (bitset<32> pad : paddedBits) {
+      cout << pad << endl;
+    }
+    cout << endl;
+  }
 
   bitset<32> schedule[64];
 
   prepare_message_schedule(schedule, paddedBits);
 
+  if (str == "testString") {
+    cout << "----Message Schedule----" << endl;
+
+    for (bitset<32> sched : schedule) {
+      cout << sched << endl;
+    }
+
+    cout << endl;
+  }
+
   compute_hash(schedule, hArr);
+
+  if (str == "testString") {
+    cout << "----Hash----" << endl;
+  }
 
   for (ulong h : hArr) {
     cout << setfill('0') << hex << setw(8) << h;
@@ -34,7 +66,7 @@ void sha(string str) {
   cout << endl;
 }
 
-int main() {
+void timed() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123"};
   int count = 0;
 
@@ -51,4 +83,17 @@ int main() {
   }
 
   cout << "Hashes per second: " << dec << count << endl;
+}
+
+void test() {
+  string input = "testString";
+  sha(input);
+}
+
+int main(int argC, char *argV[]) {
+  if (argV[1] && strcmp(argV[1], "test") == 0) {
+    test();
+  } else {
+    timed();
+  }
 }
