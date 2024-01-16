@@ -13,7 +13,7 @@ int main(){
   uint32_t *S;
   uint32_t **PsAndS;
   
-  PsAndS = EksBlowfishSetup(cost, salt, password);
+PsAndS = EksBlowfishSetup(cost, salt, password);
   
   P = PsAndS[0];
   S = PsAndS[1];
