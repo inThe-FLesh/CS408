@@ -1,13 +1,25 @@
+<<<<<<< HEAD
 set(CMAKE_HOST_SYSTEM "Linux-6.5.13-7-MANJARO")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
 set(CMAKE_HOST_SYSTEM_VERSION "6.5.13-7-MANJARO")
+=======
+set(CMAKE_HOST_SYSTEM "Linux-6.2.0-37-generic")
+set(CMAKE_HOST_SYSTEM_NAME "Linux")
+set(CMAKE_HOST_SYSTEM_VERSION "6.2.0-37-generic")
+>>>>>>> refs/remotes/origin/dev
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
 
 
+<<<<<<< HEAD
 set(CMAKE_SYSTEM "Linux-6.5.13-7-MANJARO")
 set(CMAKE_SYSTEM_NAME "Linux")
 set(CMAKE_SYSTEM_VERSION "6.5.13-7-MANJARO")
+=======
+set(CMAKE_SYSTEM "Linux-6.2.0-37-generic")
+set(CMAKE_SYSTEM_NAME "Linux")
+set(CMAKE_SYSTEM_VERSION "6.2.0-37-generic")
+>>>>>>> refs/remotes/origin/dev
 set(CMAKE_SYSTEM_PROCESSOR "x86_64")
 
 set(CMAKE_CROSSCOMPILING "FALSE")

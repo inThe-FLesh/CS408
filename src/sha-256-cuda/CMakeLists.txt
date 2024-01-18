@@ -8,8 +8,12 @@ add_executable(sha_256_cuda src/sha256Cuda.cu
         src/preprocessing.cu
         ../sha-256/preprocessing.h
         ../sha-256/preprocessing.h
+<<<<<<< HEAD
         ../sha-256/preprocessing.h
         src/computation.cu)
+=======
+        ../sha-256/preprocessing.h)
+>>>>>>> refs/remotes/origin/dev
 
 set_target_properties(sha_256_cuda PROPERTIES
         CUDA_SEPARABLE_COMPILATION ON)

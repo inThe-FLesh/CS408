@@ -28,7 +28,11 @@ void sha(string str) {
   compute_hash(schedule, hArr);
 
   for (ulong h : hArr) {
+<<<<<<< HEAD
     cout << setfill('0') << hex << setw(8) << h;
+=======
+      cout << setfill('0') << hex << setw(8) << h;
+>>>>>>> refs/remotes/origin/dev
   }
 
   cout << endl;
@@ -36,10 +40,14 @@ void sha(string str) {
 
 int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123"};
+<<<<<<< HEAD
   int count = 0;
+=======
+  //int count = 0;
+>>>>>>> refs/remotes/origin/dev
 
   // solution for timer found on stack overflow
-  auto now = std::chrono::steady_clock::now;
+  /*auto now = std::chrono::steady_clock::now;
   duration<long> executeTime = 1s;
   auto start = now();
 
@@ -50,5 +58,6 @@ int main() {
     }
   }
 
-  cout << "Hashes per second: " << dec << count << endl;
+  cout << "Hashes per second: " << dec << count << endl;*/
+  sha(strArr[0]);
 }

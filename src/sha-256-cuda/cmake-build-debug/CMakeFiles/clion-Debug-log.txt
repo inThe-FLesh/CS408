@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /app/extra/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/app/extra/clion/bin/ninja/linux/x64/ninja -G Ninja -S /home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda -B /home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda/cmake-build-debug
 CMake Error at /app/extra/clion/bin/cmake/linux/x64/share/cmake-3.26/Modules/CMakeDetermineCompilerId.cmake:751 (message):
   Compiling the CUDA compiler identification source file
@@ -31,3 +32,9 @@ Call Stack (most recent call first):
 
 
 -- Configuring incomplete, errors occurred!
+=======
+/snap/clion/250/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/250/bin/ninja/linux/x64/ninja -DCMAKE_C_COMPILER=/bin/gcc -G Ninja -S /home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda -B /home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda/cmake-build-debug
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda/cmake-build-debug
+>>>>>>> refs/remotes/origin/dev
