@@ -14,7 +14,7 @@ using std::bitset;
 using std::cout;
 using std::endl;
 
-void compute_hash(uint32_t *W, uint32_t hArr[]);
+void compute_hash(uint32_t *W, uint32_t *hArr);
 
 uint32_t right_rotation(uint32_t bits, int n);
 

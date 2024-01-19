@@ -1,9 +1,13 @@
 //
 // Created by ross on 27/10/23.
 //
+//
+// upgraded implementation to no longer use bitset and use malloc to declare
+// arrays. All arrays are now passed as pointers for efficiency
 
 #include "SHA256.h"
 #include "computation.h"
+#include <cstdlib>
 
 void sha(string str) {
   uint8_t *bits;
@@ -25,7 +29,7 @@ void sha(string str) {
 
   compute_hash(schedule, hArr);
 
-  /* cout << "hash: ";
+  /*cout << "hash: ";
 
   for (ulong h : hArr) {
     cout << setfill('0') << hex << setw(8) << h;
@@ -36,6 +40,7 @@ void sha(string str) {
 
   free(paddedBits);
   free(bits);
+  free(schedule);
 }
 
 int main() {
