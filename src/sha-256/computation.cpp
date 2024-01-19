@@ -2,6 +2,7 @@
 // Created by ross on 28/10/23.
 //
 #include "computation.h"
+#include <cstdint>
 /*
  * function that takes a 32-bit number and right shifts it by n
  * initially shifts the bits right
@@ -9,7 +10,7 @@
  * beginning xor at the end to combine the right and left
  */
 
-void compute_hash(bitset<32> W[], uint32_t hArr[]) {
+void compute_hash(uint32_t *W, uint32_t hArr[]) {
 
   // declaring variables for computation
   uint32_t a = 0x6a09e667;
@@ -38,8 +39,7 @@ void compute_hash(bitset<32> W[], uint32_t hArr[]) {
 
   for (int t = 0; t < 64; t++) {
     uint32_t T1 =
-        (h + big_sigma_one(e) + choose(e, f, g) + k[t] + W[t].to_ulong()) %
-        4294967296;
+        (h + big_sigma_one(e) + choose(e, f, g) + k[t] + W[t]) % 4294967296;
     uint32_t T2 = (big_sigma_zero(a) + majority(a, b, c)) % 4294967296;
     h = g;
     g = f;
@@ -61,74 +61,67 @@ void compute_hash(bitset<32> W[], uint32_t hArr[]) {
   hArr[7] += h;
 }
 
-bitset<32> right_rotation(bitset<32> bits, int n) {
+uint32_t right_rotation(uint32_t bits, int n) {
   // modulo 32 to ensure that ot can't ever shift more places than there are
   // bits
   n = n % 32;
 
-  bitset<32> shiftedBits = bits >> n;
-  bitset<32> rotatedBits = bits << 32 - n;
+  uint32_t shiftedBits = bits >> n;
+  uint32_t rotatedBits = bits << (32 - n);
   return shiftedBits ^ rotatedBits;
 }
 
-void prepare_message_schedule(bitset<32> schedule[], bitset<32> paddedBits[]) {
+uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
+
+  uint32_t *schedule = (uint32_t *)malloc(sizeof(uint32_t) * 64);
+
   for (int i = 0; i < 16; i++) {
     schedule[i] = paddedBits[i];
   }
   build_message_schedule(schedule);
+
+  return schedule;
 }
 
 // The formula to derive any value for W at position T
-<<<<<<< HEAD
-void build_message_schedule(bitset<32> W[]) {
+void build_message_schedule(uint32_t *W) {
   for (int t = 16; t <= 63; t++) {
-    W[t] = sigma_one(W[t - 2]) + (W[t - 7]).to_ulong() + sigma_zero(W[t - 15]) +
-           (W[t - 16]).to_ulong();
-    cout << W[t].to_ulong() << endl;
+    W[t] = sigma_one(W[t - 2]) + W[t - 7] + sigma_zero(W[t - 15]) + (W[t - 16]);
   }
-=======
-void build_message_schedule(bitset<32> W[]){
-    for (int t = 16; t <= 63; t++){
-        W[t] = sigma_one(W[t - 2]) + (W[t - 7]).to_ulong() + sigma_zero(W[t - 15]) + (W[t-16]).to_ulong();
-        cout << W[t].to_ulong() << endl;
-    }
->>>>>>> refs/remotes/origin/dev
 }
 
-ulong sigma_zero(bitset<32> bits) {
-  ulong sigmaReturn = (right_rotation(bits, 7)).to_ulong() ^
-                      (right_rotation(bits, 18)).to_ulong() ^
-                      (bits >> 3).to_ulong();
+uint32_t sigma_zero(uint32_t bits) {
+  uint32_t sigmaReturn =
+      (right_rotation(bits, 7)) ^ (right_rotation(bits, 18)) ^ (bits >> 3);
   return sigmaReturn;
 }
 
-ulong sigma_one(bitset<32> bits) {
-  ulong sigmaReturn = (right_rotation(bits, 17)).to_ulong() ^
-                      (right_rotation(bits, 19)).to_ulong() ^
-                      (bits >> 10).to_ulong();
+uint32_t sigma_one(uint32_t bits) {
+  uint32_t sigmaReturn =
+      (right_rotation(bits, 17)) ^ (right_rotation(bits, 19)) ^ (bits >> 10);
   return sigmaReturn;
 }
 
-ulong big_sigma_zero(bitset<32> bits) {
-  ulong sigmaReturn = (right_rotation(bits, 2)).to_ulong() ^
-                      (right_rotation(bits, 13)).to_ulong() ^
-                      (right_rotation(bits, 22)).to_ulong();
+uint32_t big_sigma_zero(uint32_t bits) {
+  uint32_t sigmaReturn = (right_rotation(bits, 2)) ^
+                         (right_rotation(bits, 13)) ^
+                         (right_rotation(bits, 22));
   return sigmaReturn;
 }
 
-ulong big_sigma_one(bitset<32> bits) {
-  ulong sigmaReturn = (right_rotation(bits, 6)).to_ulong() ^
-                      (right_rotation(bits, 11)).to_ulong() ^
-                      (right_rotation(bits, 25)).to_ulong();
+uint32_t big_sigma_one(uint32_t bits) {
+  uint32_t sigmaReturn = (right_rotation(bits, 6)) ^
+                         (right_rotation(bits, 11)) ^
+                         (right_rotation(bits, 25));
   return sigmaReturn;
 }
 
-ulong choose(bitset<32> x, bitset<32> y, bitset<32> z) {
-  bitset<32> chooseReturn = (x & y) ^ (~x & z);
-  return chooseReturn.to_ulong();
+uint32_t choose(uint32_t x, uint32_t y, uint32_t z) {
+  uint32_t chooseReturn = (x & y) ^ (~x & z);
+  return chooseReturn;
 }
 
-ulong majority(bitset<32> x, bitset<32> y, bitset<32> z) {
-  bitset<32> majorityReturn = (x & y) ^ (x & z) ^ (y & z);
-  return majorityReturn.to_ulong();
+uint32_t majority(uint32_t x, uint32_t y, uint32_t z) {
+  uint32_t majorityReturn = (x & y) ^ (x & z) ^ (y & z);
+  return majorityReturn;
 }
