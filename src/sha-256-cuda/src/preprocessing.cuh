@@ -13,11 +13,11 @@
 using std::bitset;
 using std::string;
 
-uint8_t *string_to_binary(const string &str);
+__host__ uint8_t *string_to_binary(const string &str);
 
-uint32_t *pad_binary(uint8_t *bits, int size);
+__device__ uint32_t *pad_binary(uint8_t *bits, int size);
 
-void add_length_bits(uint32_t *paddedBits, int sizeBits);
+__device__ void add_length_bits(uint32_t *paddedBits, int sizeBits);
 
 class preprocessing {};
 

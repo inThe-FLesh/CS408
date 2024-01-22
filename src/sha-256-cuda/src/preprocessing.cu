@@ -6,7 +6,7 @@
 #include <cstdint>
 
 // Convert the string into binary representation. 8 bits per character.
-uint8_t *string_to_binary(const string &str) {
+__host__ uint8_t *string_to_binary(const string &str) {
   // breaks up each word in the string to an 8-bit binary number and adds them
   // to  the array.
   uint8_t *bits = (uint8_t *)malloc(sizeof(uint8_t) * str.size());
@@ -20,7 +20,7 @@ uint8_t *string_to_binary(const string &str) {
 
 // divides the characters into 32 bit blocks then appends a single one and pads
 // with zeros.
-uint32_t *pad_binary(uint8_t *bits, int size) {
+__device__ uint32_t *pad_binary(uint8_t *bits, int size) {
 
   uint32_t *paddedBits = (uint32_t *)malloc(sizeof(uint32_t) * 16);
 
@@ -65,7 +65,7 @@ uint32_t *pad_binary(uint8_t *bits, int size) {
 }
 
 // Uses the last 64 bits in order to record the length of the original message.
-void add_length_bits(uint32_t *paddedBits, int sizeBits) {
+__device__ void add_length_bits(uint32_t *paddedBits, int sizeBits) {
   uint64_t lengthBits = sizeBits;
   uint64_t divider = 0xFFFFFFFF00000000;
 

@@ -10,7 +10,7 @@
  * beginning xor at the end to combine the right and left
  */
 
-void compute_hash(uint32_t *W, uint32_t *hArr) {
+__device__ void compute_hash(uint32_t *W, uint32_t *hArr) {
 
   // declaring variables for computation
 
@@ -62,7 +62,7 @@ void compute_hash(uint32_t *W, uint32_t *hArr) {
   hArr[7] = h + hArr[7];
 }
 
-uint32_t right_rotation(uint32_t bits, int n) {
+__device__ uint32_t right_rotation(uint32_t bits, int n) {
   // modulo 32 to ensure that ot can't ever shift more places than there are
   // bits
   n = n % 32;
@@ -75,7 +75,7 @@ uint32_t right_rotation(uint32_t bits, int n) {
   return shiftedBits;
 }
 
-uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
+__device__ uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
 
   uint32_t *schedule = (uint32_t *)malloc(sizeof(uint32_t) * 64);
 
@@ -98,38 +98,38 @@ uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
   }
 }*/
 
-uint32_t sigma_zero(uint32_t bits) {
+__device__ uint32_t sigma_zero(uint32_t bits) {
   uint32_t sigmaReturn =
       (right_rotation(bits, 7)) ^ (right_rotation(bits, 18)) ^ (bits >> 3);
   return sigmaReturn;
 }
 
-uint32_t sigma_one(uint32_t bits) {
+__device__ uint32_t sigma_one(uint32_t bits) {
   uint32_t sigmaReturn =
       (right_rotation(bits, 17)) ^ (right_rotation(bits, 19)) ^ (bits >> 10);
   return sigmaReturn;
 }
 
-uint32_t big_sigma_zero(uint32_t bits) {
+__device__ uint32_t big_sigma_zero(uint32_t bits) {
   uint32_t sigmaReturn = (right_rotation(bits, 2)) ^
                          (right_rotation(bits, 13)) ^
                          (right_rotation(bits, 22));
   return sigmaReturn;
 }
 
-uint32_t big_sigma_one(uint32_t bits) {
+__device__ uint32_t big_sigma_one(uint32_t bits) {
   uint32_t sigmaReturn = (right_rotation(bits, 6)) ^
                          (right_rotation(bits, 11)) ^
                          (right_rotation(bits, 25));
   return sigmaReturn;
 }
 
-uint32_t choose(uint32_t x, uint32_t y, uint32_t z) {
+__device__ uint32_t choose(uint32_t x, uint32_t y, uint32_t z) {
   uint32_t chooseReturn = (x & y) ^ (~x & z);
   return chooseReturn;
 }
 
-uint32_t majority(uint32_t x, uint32_t y, uint32_t z) {
+__device__ uint32_t majority(uint32_t x, uint32_t y, uint32_t z) {
   uint32_t majorityReturn = (x & y) ^ (x & z) ^ (y & z);
   return majorityReturn;
 }

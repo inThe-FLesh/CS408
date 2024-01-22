@@ -4,8 +4,6 @@
 
 #ifndef CS408_SHA256_H
 #define CS408_SHA256_H
-#include "computation.cuh"
-#include "preprocessing.cuh"
 #include <bitset>
 #include <chrono>
 #include <cmath>
