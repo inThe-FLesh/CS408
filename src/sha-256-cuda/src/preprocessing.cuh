@@ -4,26 +4,21 @@
 
 #ifndef CS408_PREPROCESSING_H
 #define CS408_PREPROCESSING_H
-#include <iostream>
-#include <iomanip>
 #include <bitset>
 #include <cmath>
+#include <cstdint>
+#include <iomanip>
+#include <iostream>
 
-using std::string;
 using std::bitset;
+using std::string;
 
-void string_to_binary(const string& str, bitset<8> bits[]);
+uint8_t *string_to_binary(const string &str);
 
-void pad_binary(bitset<32> paddedBits[], bitset<8> bits[], int size);
+uint32_t *pad_binary(uint8_t *bits, int size);
 
-void add_length_bits(bitset<32> paddedBits[], int sizeBits);
+void add_length_bits(uint32_t *paddedBits, int sizeBits);
 
+class preprocessing {};
 
-
-
-class preprocessing {
-
-};
-
-
-#endif //CS408_PREPROCESSING_H
+#endif // CS408_PREPROCESSING_H
