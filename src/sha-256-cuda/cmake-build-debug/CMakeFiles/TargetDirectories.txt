@@ -1,3 +1,0 @@
-/home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda/cmake-build-debug/CMakeFiles/sha_256_cuda.dir
-/home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/ross/Documents/Year4/CS408/CS408/src/sha-256-cuda/cmake-build-debug/CMakeFiles/rebuild_cache.dir
