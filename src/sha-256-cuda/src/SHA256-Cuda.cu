@@ -1,10 +1,3 @@
-//
-// Created by ross on 27/10/23.
-//
-//
-
-// upgraded implementation to no longer use bitset and use malloc to declare
-// arrays. All arrays are now passed as pointers for efficiency
 
 #include "SHA256-Cuda.cuh"
 #include "computation.cuh"
@@ -12,7 +5,9 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include <iterator>
+#include <sys/types.h>
 
 __global__ void sha(uint8_t **bitsArr, int *strSizes) {
   uint32_t *paddedBits;
@@ -33,11 +28,12 @@ __global__ void sha(uint8_t **bitsArr, int *strSizes) {
 
   compute_hash(schedule, hArr);
 
-  printf("hash: ");
-
-  for (uint32_t h : hArr) {
-    printf("%#010x\n", h);
+  for (unsigned int i : hArr) {
+    printf("hello");
+    printf("%#010x", i);
   }
+
+  printf("\n");
 
   free(paddedBits);
   free(bits);
@@ -46,16 +42,30 @@ __global__ void sha(uint8_t **bitsArr, int *strSizes) {
 
 int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123", "openSesame"};
-  uint8_t **bits = (uint8_t **)malloc(sizeof(uint8_t *) * size(strArr));
-  int *strSizes = (int *)malloc(sizeof(int) * size(strArr));
+  size_t bitsBytes = sizeof(uint8_t *) * size(strArr);
+  size_t strSizesBytes = sizeof(int) * size(strArr);
+  uint8_t **h_bits = (uint8_t **)malloc(bitsBytes);
+  int *h_strSizes = (int *)malloc(strSizesBytes);
+  uint8_t **d_bits;
+  int *d_strSizes;
   int count = 0;
 
   for (int i = 0; i < size(strArr); i++) {
-    bits[i] = string_to_binary(strArr[i]);
-    strSizes[i] = size(strArr);
+    h_bits[i] = string_to_binary(strArr[i]);
+    h_strSizes[i] = size(strArr);
   }
 
-  sha<<<1, 4>>>(bits, strSizes);
+  cudaMalloc(&d_bits, sizeof(uint8_t *) * size(strArr));
+  cudaMalloc(&d_strSizes, sizeof(int) * size(strArr));
+
+  cudaMemcpy(d_bits, h_bits, bitsBytes, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
+
+  free(h_bits);
+  free(h_strSizes);
+
+  sha<<<1, 4>>>(d_bits, d_strSizes);
+  cudaDeviceSynchronize();
 
   // solution for timer found on stack overflow
   /*auto now = std::chrono::steady_clock::now;
@@ -66,9 +76,6 @@ int main() {
     sha<<<1, 4>>>(bits, strSizes);
     count += 4;
   }*/
-
-  free(bits);
-  free(strSizes);
 
   cout << "Hashes per second: " << dec << count << endl;
   // sha(strArr[0]);
