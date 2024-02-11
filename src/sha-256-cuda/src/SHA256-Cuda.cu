@@ -7,16 +7,15 @@
 #include <iterator>
 #include <sys/types.h>
 
-__global__ void sha(uint8_t **bitsArr, int *strSizes) {
+/*I had to move all of the functions from the other files
+  into this file, otherwise it wouldn't build correctly*/
+
+__global__ void sha(uint8_t **bitsArr, int *strSizes, uint32_t *hArr) {
     uint32_t  *paddedBits;
     int threadID = threadIdx.x;
     uint8_t *bits = bitsArr[threadID];
     int strSize = strSizes[threadID];
-
-    printf("Hello1");
-
-    uint32_t hArr[] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-                       0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
+    uint32_t hArrOut[8];
 
     paddedBits = pad_binary(bits, strSize);
 
@@ -28,12 +27,11 @@ __global__ void sha(uint8_t **bitsArr, int *strSizes) {
 
     compute_hash(schedule, hArr);
 
-    for (unsigned int i : hArr) {
-        printf("hello");
-        printf("%#010x", i);
+    for (int i = 0; i < 8; i++) {
+        hArrOut[i] = hArr[i];
     }
 
-    printf("\n");
+    printf("jello");
 
     free(paddedBits);
     free(bits);
@@ -43,29 +41,41 @@ __global__ void sha(uint8_t **bitsArr, int *strSizes) {
 
 int main() {
     string strArr[] = { "RedBlockBlue", "12345", "zorgLover123", "openSesame" };
+
     size_t bitsBytes = sizeof(uint8_t*) * size(strArr);
     size_t strSizesBytes = sizeof(int) * size(strArr);
+    size_t hArrSizeBytes = sizeof(uint32_t) * 8;
+
     uint8_t** h_bits = (uint8_t**)malloc(bitsBytes);
     int* h_strSizes = (int*)malloc(strSizesBytes);
+
     uint8_t** d_bits;
     int* d_strSizes;
+    uint32_t* d_hArr;
+    
     int count = 0;
+
+
+    uint32_t hArr[] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
 
     for (int i = 0; i < size(strArr); i++) {
         h_bits[i] = string_to_binary(strArr[i]);
-        h_strSizes[i] = size(strArr);
+        h_strSizes[i] = size(strArr[i]);
     }
 
-    cudaMalloc(&d_bits, sizeof(uint8_t*) * size(strArr));
-    cudaMalloc(&d_strSizes, sizeof(int) * size(strArr));
+    cudaMalloc(&d_bits, bitsBytes);
+    cudaMalloc(&d_strSizes, strSizesBytes);
+    cudaMalloc(&d_hArr, hArrSizeBytes);
 
     cudaMemcpy(d_bits, h_bits, bitsBytes, cudaMemcpyHostToDevice);
     cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_hArr, hArr, hArrSizeBytes, cudaMemcpyHostToDevice);
 
     free(h_bits);
     free(h_strSizes);
 
-    sha <<<1, 4 >>> (d_bits, h_strSizes);
+    sha <<<1, 4 >>> (d_bits, d_strSizes, d_hArr);
     cudaDeviceSynchronize();
 
     // solution for timer found on stack overflow
@@ -109,8 +119,8 @@ __device__ uint32_t* pad_binary(uint8_t* bits, int size) {
 
     for (int i = 0, j = 0; j < index; i += 4, j++) {
         // multiply each by 2^n to move the binary number n places to the left
-        paddedBits[j] = bits[i] * pow(2, 24) + bits[i + 1] * pow(2, 16) +
-            bits[i + 2] * pow(2, 8) + bits[i + 3];
+        paddedBits[j] = bits[i] * 16777216 + bits[i + 1] * 65536 +
+            bits[i + 2] * 256 + bits[i + 3];
     }
 
     int i = index * 4;
@@ -119,23 +129,25 @@ __device__ uint32_t* pad_binary(uint8_t* bits, int size) {
     // Switch statement to determine what goes in the last 32 bit block. This
     // ensures that messages with characters not divisible by four are not
     // shortened.
+
+    // Had to replace the powers with their values as it did not work on the GPU
     switch (remainder) {
     case 1:
-        paddedBits[index] = bits[i] * pow(2, 24) + append * pow(2, 16);
+        paddedBits[index] = bits[i] * 16777216 + append * 65536;
         break;
 
     case 2:
         paddedBits[index] =
-            bits[i] * pow(2, 24) + bits[i + 1] * pow(2, 16) + append * pow(2, 8);
+            bits[i] * 1677721 + bits[i + 1] * 65536 + append * 256;
         break;
 
     case 3:
-        paddedBits[index] = bits[i] * pow(2, 24) + bits[i + 1] * pow(2, 16) +
-            bits[i + 2] * pow(2, 8) + append;
+        paddedBits[index] = bits[i] * 1677721 + bits[i + 1] * 65536 +
+            bits[i + 2] * 256 + append;
         break;
 
     default:
-        paddedBits[index] = append * pow(2, 24);
+        paddedBits[index] = append * 1677721;
         break;
     }
 

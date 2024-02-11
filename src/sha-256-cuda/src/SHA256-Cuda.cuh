@@ -20,6 +20,17 @@ using std::string;
 using std::bitset;
 using std::cout;
 using std::endl;
+using namespace std::chrono;
+using namespace std::chrono_literals;
+using std::cin;
+using std::cout;
+using std::dec;
+using std::hex;
+using std::setfill;
+using std::setw;
+using std::string;
+
+__global__ void sha(uint8_t** bitsArr, int* strSizes);
 
 __host__ uint8_t* string_to_binary(const string& str);
 
@@ -46,19 +57,6 @@ __device__ uint32_t big_sigma_one(uint32_t bits);
 __device__ uint32_t choose(uint32_t x, uint32_t y, uint32_t z);
 
 __device__ uint32_t majority(uint32_t x, uint32_t y, uint32_t z);
-
-__global__ void sha(uint8_t** bitsArr, int* strSizes);
-
-
-using namespace std::chrono;
-using namespace std::chrono_literals;
-using std::cin;
-using std::cout;
-using std::dec;
-using std::hex;
-using std::setfill;
-using std::setw;
-using std::string;
 
 class SHA256 {};
 
