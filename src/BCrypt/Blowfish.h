@@ -33,6 +33,8 @@ public:
     rightBuffer = bufferHalves[1] ^ P[16];
     leftBuffer = bufferHalves[0] ^ P[17];
 
+    free(bufferHalves);
+
     output = leftBuffer;
     output = (output << 32) + rightBuffer;
 
@@ -46,6 +48,8 @@ private:
 
     bufferHalves[0] = (buffer >> 32) & divider;
     bufferHalves[1] = buffer & divider;
+
+    return bufferHalves;
   }
 
   uint32_t f(uint32_t word) {
