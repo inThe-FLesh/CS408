@@ -1,7 +1,6 @@
 #include "EksBlowfish.h"
 #include <cstdint>
 #include <cstdlib>
-#include <iostream>
 #include <string>
 #include <tuple>
 
@@ -34,6 +33,7 @@ std::tuple<string, int> cyclePassword(string password, int position) {
 
 void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
   int position = 0;
+  uint64_t block = 0;
 
   for (int i = 0; i < 18; i++) {
     std::tuple<string, int> cycledPass = cyclePassword(password, position);
@@ -42,7 +42,13 @@ void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
     P[i] = P[i] ^ std::stoul(passwordBits);
   }
 
-  // continue from here
+  for (int i = 0; i < 9; i++) {
+    block = block ^ salt[i % 2];
+  }
+
+  Blowfish fish(P, S, block);
+
+  block = fish.Encrypt();
 }
 
 void initialiseState(uint32_t *P, uint32_t **S) {
