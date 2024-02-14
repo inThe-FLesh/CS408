@@ -29,14 +29,14 @@ void sha(string str) {
 
   compute_hash(schedule, hArr);
 
-  /*cout << "hash: ";
+  cout << "hash: ";
 
-  for (ulong h : hArr) {
+  for (uint32_t h : hArr) {
     cout << setfill('0') << hex << setw(8) << h;
     cout << setfill('0') << hex << setw(8) << h;
   }
 
-  cout << endl;*/
+  cout << endl;
 
   free(paddedBits);
   free(bits);
