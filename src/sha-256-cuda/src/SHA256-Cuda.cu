@@ -7,15 +7,25 @@
 #include <iterator>
 #include <sys/types.h>
 
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char* file, int line, bool abort = true)
+{
+    if (code != cudaSuccess)
+    {
+        fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        if (abort) exit(code);
+    }
+}
+
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__global__ void sha(uint8_t **bitsArr, int *strSizes, uint32_t *hArr) {
+__global__ void sha(char *str, int* strSizes, uint32_t* hArr) {
     uint32_t  *paddedBits;
     int threadID = threadIdx.x;
-    uint8_t *bits = bitsArr[threadID];
     int strSize = strSizes[threadID];
-    uint32_t hArrOut[8];
+
+    uint8_t* bits = string_to_binary(str, strSize);
 
     paddedBits = pad_binary(bits, strSize);
 
@@ -27,11 +37,16 @@ __global__ void sha(uint8_t **bitsArr, int *strSizes, uint32_t *hArr) {
 
     compute_hash(schedule, hArr);
 
-    for (int i = 0; i < 8; i++) {
-        hArrOut[i] = hArr[i];
-    }
+    if (threadID == 0) {
 
-    printf("jello");
+        printf("hash: ");
+
+        for (int i = 0; i < 8; i++) {
+            printf("%x", hArr[i]);
+        }
+
+        printf("\n");
+    }
 
     free(paddedBits);
     free(bits);
@@ -40,43 +55,39 @@ __global__ void sha(uint8_t **bitsArr, int *strSizes, uint32_t *hArr) {
 
 
 int main() {
-    string strArr[] = { "RedBlockBlue", "12345", "zorgLover123", "openSesame" };
+    //string strArr[] = {"RedBlockBlue", "12345", "zorgLover123", "openSesame"};
+    const char *h_str = "RedBlockBlue";
 
-    size_t bitsBytes = sizeof(uint8_t*) * size(strArr);
-    size_t strSizesBytes = sizeof(int) * size(strArr);
+    size_t strSizesBytes = sizeof(char) * 12;
     size_t hArrSizeBytes = sizeof(uint32_t) * 8;
 
-    uint8_t** h_bits = (uint8_t**)malloc(bitsBytes);
     int* h_strSizes = (int*)malloc(strSizesBytes);
 
-    uint8_t** d_bits;
+    uint32_t hArr[] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
+
+    char* d_str;
     int* d_strSizes;
     uint32_t* d_hArr;
     
     int count = 0;
 
-
-    uint32_t hArr[] = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-                        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
-
-    for (int i = 0; i < size(strArr); i++) {
-        h_bits[i] = string_to_binary(strArr[i]);
-        h_strSizes[i] = size(strArr[i]);
+    for (int i = 0; i < 4; i++) {
+        h_strSizes[i] = 12;
     }
 
-    cudaMalloc(&d_bits, bitsBytes);
+    cudaMalloc(&d_str, strSizesBytes);
     cudaMalloc(&d_strSizes, strSizesBytes);
     cudaMalloc(&d_hArr, hArrSizeBytes);
 
-    cudaMemcpy(d_bits, h_bits, bitsBytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_str, h_str, strSizesBytes, cudaMemcpyHostToDevice);
     cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
     cudaMemcpy(d_hArr, hArr, hArrSizeBytes, cudaMemcpyHostToDevice);
 
-    free(h_bits);
-    free(h_strSizes);
+    sha <<<1, 4 >>> (d_str, d_strSizes, d_hArr);
+    
+    cudaMemcpy(hArr, d_hArr, hArrSizeBytes, cudaMemcpyDeviceToHost);
 
-    sha <<<1, 4 >>> (d_bits, d_strSizes, d_hArr);
-    cudaDeviceSynchronize();
 
     // solution for timer found on stack overflow
     /*auto now = std::chrono::steady_clock::now;
@@ -88,7 +99,7 @@ int main() {
       count += 4;
     }*/
 
-    cout << "Hashes per second: " << dec << count << endl;
+    //cout << "Hashes per second: " << dec << count << endl;
     // sha(strArr[0]);
 }
 
@@ -96,12 +107,12 @@ int main() {
 /*Preprocessing code*/
 
 // Convert the string into binary representation. 8 bits per character.
-__host__ uint8_t* string_to_binary(const string& str) {
+__device__ uint8_t *string_to_binary(const char* str, const int strLen) {
     // breaks up each word in the string to an 8-bit binary number and adds them
     // to  the array.
-    uint8_t* bits = (uint8_t*)malloc(sizeof(uint8_t) * str.size());
+    uint8_t* bits = (uint8_t*)malloc(sizeof(uint8_t) * strLen);
 
-    for (int i = 0; i < str.length(); i++) {
+    for (int i = 0; i < strLen; i++) {
         bits[i] = uint8_t(str[i]);
     }
 
