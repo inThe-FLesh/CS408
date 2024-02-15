@@ -19,13 +19,45 @@ void sha(string str) {
 
   bits = string_to_binary(str);
 
+  cout << "bits: ";
+
+  for (int i = 0; i < str.length(); i++) {
+    cout << bits[i] << " ";
+  }
+
+  cout << endl;
+
   paddedBits = pad_binary(bits, str.size());
 
+  cout << "Padded Bits: ";
+
+  for (int i = 0; i < 16; i++) {
+    cout << hex << paddedBits[i] << " ";
+  }
+
+  cout << endl;
+
   add_length_bits(paddedBits, (str.size() * 8));
+
+  cout << "Length Bits: ";
+
+  for (int i = 0; i < 16; i++) {
+    cout << paddedBits[i];
+  }
+
+  cout << endl;
 
   uint32_t *schedule;
 
   schedule = prepare_message_schedule(paddedBits);
+
+  cout << "Message Schedule: ";
+
+  for (int i = 0; i < 16; i++) {
+    cout << schedule[i];
+  }
+
+  cout << endl;
 
   compute_hash(schedule, hArr);
 
@@ -46,9 +78,8 @@ void sha(string str) {
 int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123"};
   int count = 0;
-
   // solution for timer found on stack overflow
-  auto now = std::chrono::steady_clock::now;
+  /*auto now = std::chrono::steady_clock::now;
   duration<long> executeTime = 1s;
   auto start = now();
 
@@ -57,8 +88,8 @@ int main() {
       sha(str);
       count += 1;
     }
-  }
+  }*/
 
-  cout << "Hashes per second: " << dec << count << endl;
-  // sha(strArr[0]);
+  // cout << "Hashes per second: " << dec << count << endl;
+  sha(strArr[0]);
 }

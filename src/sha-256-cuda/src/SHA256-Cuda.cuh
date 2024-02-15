@@ -4,22 +4,21 @@
 
 #ifndef CS408_SHA256_H
 #define CS408_SHA256_H
+#include "device_launch_parameters.h"
 #include <bitset>
 #include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
+#include <cuda_runtime.h>
 #include <iomanip>
 #include <iostream>
 #include <sys/types.h>
-#include <cuda_runtime.h>
-#include "device_launch_parameters.h"
 
-using std::bitset;
-using std::string;
 using std::bitset;
 using std::cout;
 using std::endl;
+using std::string;
 using namespace std::chrono;
 using namespace std::chrono_literals;
 using std::cin;
@@ -30,21 +29,34 @@ using std::setfill;
 using std::setw;
 using std::string;
 
-__global__ void sha(uint8_t** bitsArr, int* strSizes);
+// This structure is used to make our strArr into one long string and list the
+// points at which each string starts and ends.
+struct cudaStrArr {
+  char *strArr;
+  int *positions;
+};
 
-__host__ uint8_t* string_to_binary(const string& str);
+__global__ void sha(cudaStrArr charArr, int *strSizes, uint32_t *hArr);
 
-__device__ uint32_t *pad_binary(uint8_t* bits, int size);
+__host__ char *createCharArr(string *strArr, int strArrSize);
 
-__device__ void add_length_bits(uint32_t* paddedBits, int sizeBits);
+__host__ int *getPositions(string *strArr, int strArrSize);
 
-__device__ void compute_hash(uint32_t* W, uint32_t* hArr);
+__device__ char *getString(char *str, int *positions, int index);
+
+__device__ uint8_t *string_to_binary(const char *str, const int strLen);
+
+__device__ uint32_t *pad_binary(uint8_t *bits, int size);
+
+__device__ void add_length_bits(uint32_t *paddedBits, int sizeBits);
+
+__device__ void compute_hash(uint32_t *W, uint32_t *hArr);
 
 __device__ uint32_t right_rotation(uint32_t bits, int n);
 
-__device__ uint32_t* prepare_message_schedule(uint32_t* paddedBits);
+__device__ uint32_t *prepare_message_schedule(uint32_t *paddedBits);
 
-__device__ void build_message_schedule(uint32_t* W);
+__device__ void build_message_schedule(uint32_t *W);
 
 __device__ uint32_t sigma_zero(uint32_t bits);
 
