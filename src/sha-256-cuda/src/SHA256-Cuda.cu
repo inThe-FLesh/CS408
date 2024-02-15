@@ -7,6 +7,14 @@
 #include <strings.h>
 #include <sys/types.h>
 
+
+#include "SHA256-Cuda.cuh"
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <iterator>
+#include <sys/types.h>
 #define gpuErrchk(ans)                                                         \
   { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line,
@@ -26,6 +34,9 @@ __global__ void sha(cudaStrArr *charArr, int *strSizes, uint32_t *hArr) {
   uint32_t *paddedBits;
   int threadID = threadIdx.x;
   int strSize = strSizes[threadID];
+  char* testStr = charArr->strArr;
+  int* testPosition = charArr->positions;
+
   char *str = getString(charArr->strArr, charArr->positions, threadID);
 
   uint8_t *bits = string_to_binary(str, strSize);
@@ -101,6 +112,7 @@ int main() {
   sha<<<1, 4>>>(d_charArr, d_strSizes, d_hArr);
 
   cudaMemcpy(hArr, d_hArr, hArrSizeBytes, cudaMemcpyDeviceToHost);
+  gpuErrchk(cudaPeekAtLastError());
 
   // solution for timer found on stack overflow
   /*auto now = std::chrono::steady_clock::now;
