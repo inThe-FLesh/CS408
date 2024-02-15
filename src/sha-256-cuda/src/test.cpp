@@ -75,6 +75,8 @@ int main() {
   cStrArr.strArr = createCharArr(strArr, size(strArr));
   cStrArr.positions = getPositions(strArr, size(strArr));
 
-  char *charStr = getString(cStrArr.strArr, cStrArr.positions, 0);
+  cudaStrArr *pStrArr = &cStrArr;
+
+  char *charStr = getString(pStrArr->strArr, pStrArr->positions, 0);
   cout << charStr << endl;
 }

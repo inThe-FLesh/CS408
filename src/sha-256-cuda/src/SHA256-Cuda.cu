@@ -1,12 +1,12 @@
 
 #include "SHA256-Cuda.cuh"
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <strings.h>
 #include <sys/types.h>
-
 
 #include "SHA256-Cuda.cuh"
 #include <cstdint>
@@ -30,14 +30,12 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__global__ void sha(cudaStrArr *charArr, int *strSizes, uint32_t *hArr) {
+__global__ void sha(char *strArr, int *positions, int *strSizes,
+                    uint32_t *hArr) {
   uint32_t *paddedBits;
   int threadID = threadIdx.x;
   int strSize = strSizes[threadID];
-  char* testStr = charArr->strArr;
-  int* testPosition = charArr->positions;
-
-  char *str = getString(charArr->strArr, charArr->positions, threadID);
+  char *str = getString(strArr, positions, threadID);
 
   uint8_t *bits = string_to_binary(str, strSize);
 
@@ -59,16 +57,11 @@ __global__ void sha(cudaStrArr *charArr, int *strSizes, uint32_t *hArr) {
 
   compute_hash(schedule, hArr);
 
-  if (threadID == 0) {
+  printf("hash: ");
 
-    printf("hash: ");
-
-    for (int i = 0; i < 8; i++) {
-      printf("%x", hArr[i]);
-    }
-
-    printf("\n");
-  }
+  printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
+         hArr[5], hArr[6], hArr[7]);
+  printf(" ");
 
   free(paddedBits);
   free(bits);
@@ -77,14 +70,19 @@ __global__ void sha(cudaStrArr *charArr, int *strSizes, uint32_t *hArr) {
 
 int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123", "openSesame"};
-  cudaStrArr *h_charArr = (cudaStrArr *)malloc(sizeof(cudaStrArr));
 
-  h_charArr->strArr = createCharArr(strArr, size(strArr));
+  char *h_cStr = createCharArr(strArr, size(strArr)), *d_cStr;
+  int *h_positions = getPositions(strArr, size(strArr)), *d_positions;
 
-  h_charArr->positions = getPositions(strArr, size(strArr));
+  int charCount = 0;
+  for (string str : strArr) {
+    charCount += str.length();
+  }
 
-  size_t strSizesBytes = sizeof(char) * 12;
-  size_t hArrSizeBytes = sizeof(uint32_t) * 8;
+  size_t cStrSize = sizeof(char) * charCount,
+         positionsSize = (sizeof(int) * size(strArr)) + 1,
+         strSizesBytes = sizeof(char) * 12,
+         hArrSizeBytes = sizeof(uint32_t) * 8;
 
   int *h_strSizes = (int *)malloc(strSizesBytes);
 
@@ -101,15 +99,17 @@ int main() {
     h_strSizes[i] = 12;
   }
 
-  cudaMalloc(&d_charArr, sizeof(cudaStrArr));
+  cudaMalloc(&d_cStr, cStrSize);
+  cudaMalloc(&d_positions, positionsSize);
   cudaMalloc(&d_strSizes, strSizesBytes);
   cudaMalloc(&d_hArr, hArrSizeBytes);
 
-  cudaMemcpy(d_charArr, h_charArr, sizeof(cudaStrArr), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_cStr, h_cStr, cStrSize, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_positions, h_positions, positionsSize, cudaMemcpyHostToDevice);
   cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
   cudaMemcpy(d_hArr, hArr, hArrSizeBytes, cudaMemcpyHostToDevice);
 
-  sha<<<1, 4>>>(d_charArr, d_strSizes, d_hArr);
+  sha<<<1, 4>>>(d_cStr, d_positions, d_strSizes, d_hArr);
 
   cudaMemcpy(hArr, d_hArr, hArrSizeBytes, cudaMemcpyDeviceToHost);
   gpuErrchk(cudaPeekAtLastError());
