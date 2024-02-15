@@ -30,12 +30,14 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__global__ void sha(char *strArr, int *positions, int *strSizes,
-                    uint32_t *hArr) {
+__global__ void sha(char *strArr, int *positions, int *strSizes) {
   uint32_t *paddedBits;
   int threadID = threadIdx.x;
   int strSize = strSizes[threadID];
   char *str = getString(strArr, positions, threadID);
+
+  uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
   uint8_t *bits = string_to_binary(str, strSize);
 
@@ -57,11 +59,11 @@ __global__ void sha(char *strArr, int *positions, int *strSizes,
 
   compute_hash(schedule, hArr);
 
-  printf("hash: ");
+  /*printf("hash: ");
 
   printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
          hArr[5], hArr[6], hArr[7]);
-  printf(" ");
+  printf(" ");*/
 
   free(paddedBits);
   free(bits);
@@ -71,8 +73,12 @@ __global__ void sha(char *strArr, int *positions, int *strSizes,
 int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123", "openSesame"};
 
-  char *h_cStr = createCharArr(strArr, size(strArr)), *d_cStr;
-  int *h_positions = getPositions(strArr, size(strArr)), *d_positions;
+  char *h_cStr = createCharArr(strArr, size(strArr));
+  int *h_positions = getPositions(strArr, size(strArr));
+
+  char *d_cStr;
+  int *d_positions;
+  int *d_strSizes;
 
   int charCount = 0;
   for (string str : strArr) {
@@ -86,13 +92,6 @@ int main() {
 
   int *h_strSizes = (int *)malloc(strSizesBytes);
 
-  uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-                     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
-
-  cudaStrArr *d_charArr;
-  int *d_strSizes;
-  uint32_t *d_hArr;
-
   int count = 0;
 
   for (int i = 0; i < 4; i++) {
@@ -102,29 +101,35 @@ int main() {
   cudaMalloc(&d_cStr, cStrSize);
   cudaMalloc(&d_positions, positionsSize);
   cudaMalloc(&d_strSizes, strSizesBytes);
-  cudaMalloc(&d_hArr, hArrSizeBytes);
 
   cudaMemcpy(d_cStr, h_cStr, cStrSize, cudaMemcpyHostToDevice);
   cudaMemcpy(d_positions, h_positions, positionsSize, cudaMemcpyHostToDevice);
   cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_hArr, hArr, hArrSizeBytes, cudaMemcpyHostToDevice);
 
-  sha<<<1, 4>>>(d_cStr, d_positions, d_strSizes, d_hArr);
+  sha<<<1, 4>>>(d_cStr, d_positions, d_strSizes);
 
-  cudaMemcpy(hArr, d_hArr, hArrSizeBytes, cudaMemcpyDeviceToHost);
   gpuErrchk(cudaPeekAtLastError());
+  count += 4;
 
   // solution for timer found on stack overflow
-  /*auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 1s;
+  auto now = std::chrono::steady_clock::now;
+  duration<long> executeTime = 10s;
   auto start = now();
 
   while ((now() - start) < executeTime) {
-    sha<<<1, 4>>>(bits, strSizes);
+    sha<<<1, 4>>>(d_cStr, d_positions, d_strSizes);
     count += 4;
-  }*/
+  }
 
-  // cout << "Hashes per second: " << dec << count << endl;
+  cout << "Hashes per second: " << dec << count << endl;
+
+  free(h_cStr);
+  free(h_strSizes);
+  free(h_positions);
+
+  cudaFree(&d_cStr);
+  cudaFree(&d_positions);
+  cudaFree(&d_strSizes);
 }
 
 __host__ char *createCharArr(string *strArr, int strArrSize) {

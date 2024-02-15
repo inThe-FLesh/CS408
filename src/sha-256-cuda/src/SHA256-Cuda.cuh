@@ -36,8 +36,7 @@ struct cudaStrArr {
   int *positions;
 };
 
-__global__ void sha(char *strArr, int *positions, int *strSizes,
-                    uint32_t *hArr);
+__global__ void sha(char *strArr, int *positions, int *strSizes);
 
 __host__ char *createCharArr(string *strArr, int strArrSize);
 
