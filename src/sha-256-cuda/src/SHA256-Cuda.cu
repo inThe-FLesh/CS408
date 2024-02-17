@@ -1,10 +1,10 @@
-
 #include "SHA256-Cuda.cuh"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <strings.h>
 #include <sys/types.h>
 
@@ -32,7 +32,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 
 __global__ void sha(char *strArr, int *positions, int *strSizes) {
   uint32_t *paddedBits;
-  int threadID = threadIdx.x;
+  int threadID = (blockIdx.x * blockDim.x) + threadIdx.x;
   int strSize = strSizes[threadID];
   char *str = getString(strArr, positions, threadID);
 
@@ -43,14 +43,6 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 
   paddedBits = pad_binary(bits, strSize);
 
-  /*if (threadID == 0) {
-    printf("padded bits: ");
-
-    for (int i = 0; i < 16; i++) {
-      printf("%x ", paddedBits[i]);
-    }
-  }*/
-
   add_length_bits(paddedBits, (strSize * 8));
 
   uint32_t *schedule;
@@ -59,77 +51,83 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 
   compute_hash(schedule, hArr);
 
-  /*printf("hash: ");
-
-  printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
-         hArr[5], hArr[6], hArr[7]);
-  printf(" ");*/
-
   free(paddedBits);
   free(bits);
   free(schedule);
 }
 
 int main() {
-  string strArr[] = {"RedBlockBlue", "12345", "zorgLover123", "openSesame"};
-
-  char *h_cStr = createCharArr(strArr, size(strArr));
-  int *h_positions = getPositions(strArr, size(strArr));
-
-  char *d_cStr;
-  int *d_positions;
-  int *d_strSizes;
-
-  int charCount = 0;
-  for (string str : strArr) {
-    charCount += str.length();
-  }
-
-  size_t cStrSize = sizeof(char) * charCount,
-         positionsSize = (sizeof(int) * size(strArr)) + 1,
-         strSizesBytes = sizeof(char) * 12,
-         hArrSizeBytes = sizeof(uint32_t) * 8;
-
-  int *h_strSizes = (int *)malloc(strSizesBytes);
-
-  int count = 0;
-
-  for (int i = 0; i < 4; i++) {
-    h_strSizes[i] = 12;
-  }
-
-  cudaMalloc(&d_cStr, cStrSize);
-  cudaMalloc(&d_positions, positionsSize);
-  cudaMalloc(&d_strSizes, strSizesBytes);
-
-  cudaMemcpy(d_cStr, h_cStr, cStrSize, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_positions, h_positions, positionsSize, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
-
-  sha<<<1, 4>>>(d_cStr, d_positions, d_strSizes);
-
-  gpuErrchk(cudaPeekAtLastError());
-  count += 4;
 
   // solution for timer found on stack overflow
+  int seconds = 60;
   auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 10s;
+  duration<long> executeTime = 60s;
   auto start = now();
 
+  const int NUM_THREADS = 2;
+  const int NUM_BLOCKS = 512;
+
+  unsigned long long count = 0;
+
   while ((now() - start) < executeTime) {
-    sha<<<1, 4>>>(d_cStr, d_positions, d_strSizes);
-    count += 4;
+    string strArr[1024];
+    int index = 0;
+    string password;
+
+    std::ifstream dictionary("dictionary.txt");
+
+    while (getline(dictionary, password)) {
+      strArr[index] = password;
+      index++;
+    }
+
+    char *h_cStr = createCharArr(strArr, size(strArr));
+    int *h_positions = getPositions(strArr, size(strArr));
+
+    char *d_cStr;
+    int *d_positions;
+    int *d_strSizes;
+
+    int charCount = 0;
+    for (string str : strArr) {
+      charCount += str.length();
+    }
+
+    size_t cStrSize = sizeof(char) * charCount,
+           positionsSize = (sizeof(int) * size(strArr)) + 1,
+           strSizesBytes = sizeof(char) * 12;
+
+    int *h_strSizes = (int *)malloc(strSizesBytes);
+
+    for (int i = 0; i < 4; i++) {
+      h_strSizes[i] = 12;
+    }
+
+    cudaMalloc(&d_cStr, cStrSize);
+    cudaMalloc(&d_positions, positionsSize);
+    cudaMalloc(&d_strSizes, strSizesBytes);
+
+    cudaMemcpy(d_cStr, h_cStr, cStrSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_positions, h_positions, positionsSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
+
+    sha<<<NUM_BLOCKS, NUM_THREADS>>>(d_cStr, d_positions, d_strSizes);
+    count += (NUM_BLOCKS * NUM_THREADS);
+
+    free(h_cStr);
+    free(h_strSizes);
+    free(h_positions);
+
+    cudaFree(&d_cStr);
+    cudaFree(&d_positions);
+    cudaFree(&d_strSizes);
   }
 
-  cout << "Hashes per second: " << dec << count << endl;
+  // count = count / seconds;
 
-  free(h_cStr);
-  free(h_strSizes);
-  free(h_positions);
-
-  cudaFree(&d_cStr);
-  cudaFree(&d_positions);
-  cudaFree(&d_strSizes);
+  cout << "Count: " << dec << count << endl;
+  cout << "Execution Time: " << seconds << " seconds" << endl;
+  cout << "hashes/s: " << count / seconds << endl;
 }
 
 __host__ char *createCharArr(string *strArr, int strArrSize) {
