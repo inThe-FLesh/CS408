@@ -1,5 +1,4 @@
 #include "SHA256-Cuda.cuh"
-#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -51,6 +50,9 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 
   compute_hash(schedule, hArr);
 
+  printf("%x%x%x%x%x%x%x%x threadID: %d:: ", hArr[0], hArr[1], hArr[2], hArr[3],
+         hArr[4], hArr[5], hArr[6], hArr[7], threadID);
+
   free(paddedBits);
   free(bits);
   free(schedule);
@@ -59,9 +61,9 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 int main() {
 
   // solution for timer found on stack overflow
-  int seconds = 60;
+  int seconds = 10;
   auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 60s;
+  duration<long> executeTime = 10s;
   auto start = now();
 
   const int NUM_THREADS = 2;
