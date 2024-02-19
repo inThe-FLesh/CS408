@@ -50,8 +50,8 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 
   compute_hash(schedule, hArr);
 
-  printf("%x%x%x%x%x%x%x%x threadID: %d:: ", hArr[0], hArr[1], hArr[2], hArr[3],
-         hArr[4], hArr[5], hArr[6], hArr[7], threadID);
+  /*printf("%x%x%x%x%x%x%x%x threadID: %d", hArr[0], hArr[1], hArr[2], hArr[3],
+         hArr[4], hArr[5], hArr[6], hArr[7], threadID);*/
 
   free(paddedBits);
   free(bits);
@@ -61,17 +61,20 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 int main() {
 
   // solution for timer found on stack overflow
-  int seconds = 10;
+  int seconds = 5;
   auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 10s;
+  duration<long> executeTime = 5s;
   auto start = now();
 
-  const int NUM_THREADS = 2;
-  const int NUM_BLOCKS = 512;
+  const int NUM_THREADS = 1;
+  const int NUM_BLOCKS = 1;
 
   unsigned long long count = 0;
 
-  while ((now() - start) < executeTime) {
+  int i = 0;
+
+  while (i < 1 /*(now() - start) < executeTime*/) {
+    int strArrSize = 10;
     string strArr[1024];
     int index = 0;
     string password;
@@ -97,12 +100,12 @@ int main() {
 
     size_t cStrSize = sizeof(char) * charCount,
            positionsSize = (sizeof(int) * size(strArr)) + 1,
-           strSizesBytes = sizeof(char) * 12;
+           strSizesBytes = sizeof(char) * charCount;
 
     int *h_strSizes = (int *)malloc(strSizesBytes);
 
-    for (int i = 0; i < 4; i++) {
-      h_strSizes[i] = 12;
+    for (int i = 0; i < strArrSize; i++) {
+      h_strSizes[i] = size(strArr[i]);
     }
 
     cudaMalloc(&d_cStr, cStrSize);
@@ -114,6 +117,7 @@ int main() {
     cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
 
     sha<<<NUM_BLOCKS, NUM_THREADS>>>(d_cStr, d_positions, d_strSizes);
+    cudaDeviceSynchronize();
     count += (NUM_BLOCKS * NUM_THREADS);
 
     free(h_cStr);
@@ -123,6 +127,8 @@ int main() {
     cudaFree(&d_cStr);
     cudaFree(&d_positions);
     cudaFree(&d_strSizes);
+
+    i++;
   }
 
   // count = count / seconds;
@@ -146,13 +152,18 @@ __host__ char *createCharArr(string *strArr, int strArrSize) {
 }
 
 __host__ int *getPositions(string *strArr, int strArrSize) {
+  printf("%d ", strArrSize);
+
   int *positions = (int *)malloc(sizeof(int) * (strArrSize * 2));
 
   positions[0] = 0;
+  printf("%d ", positions[0]);
   positions[1] = strArr[0].length();
+  printf("%d ", positions[1]);
 
   for (int i = 1; i < strArrSize; i++) {
     positions[i + 1] = strArr[i].length();
+    printf("%d ", positions[0]);
   }
 
   return positions;

@@ -1,57 +1,18 @@
-#include <bitset>
-#include <chrono>
-#include <cmath>
-#include <cstdint>
+#include "SHA256-Cuda.cuh"
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <sys/types.h>
+#include <string>
 
-using std::bitset;
-using std::cout;
-using std::endl;
-using std::string;
-using namespace std::chrono;
-using namespace std::chrono_literals;
-using std::cin;
-using std::cout;
-using std::dec;
-using std::hex;
-using std::setfill;
-using std::setw;
-using std::string;
+__global__ void testKernel(char *strArr, int *positions) {
+  char *str = strArr;
+  int start = positions[0];
+  int end = positions[1];
 
-struct cudaStrArr {
-  char *strArr;
-  int *positions;
-};
+  printf("%s %d %d\n", str, start, end);
 
-char *createCharArr(string *strArr, int strArrSize) {
-  string output;
+  char *newStr = getString(str, positions, 0);
 
-  for (int i = 0; i < strArrSize; i++) {
-    output += strArr[i];
-  }
-
-  char *outputChar = (char *)malloc(sizeof(char) * (output.length() + 1));
-  strcpy(outputChar, output.c_str());
-
-  return outputChar;
-}
-
-int *getPositions(string *strArr, int strArrSize) {
-  int *positions = (int *)malloc(sizeof(int) * (strArrSize * 2));
-
-  positions[0] = 0;
-  positions[1] = strArr[0].length();
-
-  for (int i = 1; i < strArrSize; i++) {
-    positions[i + 1] = strArr[i].length();
-  }
-
-  return positions;
+  printf("%s\n ", newStr);
 }
 
 char *getString(char *str, int *positions, int index) {
@@ -68,15 +29,23 @@ char *getString(char *str, int *positions, int index) {
 }
 
 int main() {
-  string strArr[] = {"hello", "goodbye", "nice to meet you"};
-  cout << createCharArr(strArr, size(strArr)) << endl;
+  std::string str =
+      "RedBlockBlueRedBlockBlueRedBlockBlueRedBlockBlueRedBlockBlue";
+  size_t cStrSize = sizeof(char) * str.length();
+  char *cStr = (char *)malloc(cStrSize), *d_cStr;
 
-  cudaStrArr cStrArr;
-  cStrArr.strArr = createCharArr(strArr, size(strArr));
-  cStrArr.positions = getPositions(strArr, size(strArr));
+  std::strcpy(cStr, str.c_str());
 
-  cudaStrArr *pStrArr = &cStrArr;
+  int *h_positions = (int *)malloc(sizeof(int) * 2), *d_positions;
+  h_positions[0] = 0;
+  h_positions[1] = 5;
 
-  char *charStr = getString(pStrArr->strArr, pStrArr->positions, 0);
-  cout << charStr << endl;
+  cudaMalloc(&d_cStr, cStrSize);
+  cudaMalloc(&d_positions, sizeof(int) * 2);
+
+  cudaMemcpy(d_cStr, cStr, cStrSize, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_positions, h_positions, sizeof(int) * 2, cudaMemcpyHostToDevice);
+
+  testKernel<<<1, 5>>>(d_cStr, d_positions);
+  cudaDeviceSynchronize();
 }
