@@ -1,51 +1,43 @@
-#include "SHA256-Cuda.cuh"
-#include <cstdio>
-#include <cstring>
+#include <fstream>
+#include <iostream>
 #include <string>
 
-__global__ void testKernel(char *strArr, int *positions) {
-  char *str = strArr;
-  int start = positions[0];
-  int end = positions[1];
+using std::string;
 
-  printf("%s %d %d\n", str, start, end);
+int *getPositions(string *strArr, int strArrSize) {
+  printf("%d ", strArrSize);
 
-  char *newStr = getString(str, positions, 0);
+  int *positions = (int *)malloc(sizeof(int) * (strArrSize + 1));
 
-  printf("%s\n ", newStr);
-}
+  positions[0] = 0;
+  printf("%d ", positions[0]);
+  positions[1] = strArr[0].length();
+  printf("%d ", positions[1]);
 
-char *getString(char *str, int *positions, int index) {
-  int position = positions[index];
-  int length = (positions[index + 1] - position);
-  char *outputStr = (char *)malloc(sizeof(char) * length);
-
-  for (int i = position, j = 0; i < length; i++, j++) {
-    // using i and j here as the output string has to start at 0
-    // and str has to start from position
-    outputStr[j] = str[i];
+  for (int i = 1; i < strArrSize; i++) {
+    positions[i + 1] = strArr[i].length() + positions[i];
+    printf("%d ", positions[0]);
   }
-  return outputStr;
+
+  return positions;
 }
 
 int main() {
-  std::string str =
-      "RedBlockBlueRedBlockBlueRedBlockBlueRedBlockBlueRedBlockBlue";
-  size_t cStrSize = sizeof(char) * str.length();
-  char *cStr = (char *)malloc(cStrSize), *d_cStr;
+  int strArrSize = 1024;
+  string strArr[1024];
+  int index = 0;
+  string password;
 
-  std::strcpy(cStr, str.c_str());
+  std::ifstream dictionary("dictionary.txt");
 
-  int *h_positions = (int *)malloc(sizeof(int) * 2), *d_positions;
-  h_positions[0] = 0;
-  h_positions[1] = 5;
+  while (getline(dictionary, password)) {
+    strArr[index] = password;
+    index++;
+  }
 
-  cudaMalloc(&d_cStr, cStrSize);
-  cudaMalloc(&d_positions, sizeof(int) * 2);
+  int *positions = getPositions(strArr, strArrSize);
 
-  cudaMemcpy(d_cStr, cStr, cStrSize, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_positions, h_positions, sizeof(int) * 2, cudaMemcpyHostToDevice);
-
-  testKernel<<<1, 5>>>(d_cStr, d_positions);
-  cudaDeviceSynchronize();
+  for (int i = 0; i < 1024; i++) {
+    std::cout << positions[i] << std::endl;
+  }
 }

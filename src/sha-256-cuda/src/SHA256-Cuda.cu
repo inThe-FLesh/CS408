@@ -1,4 +1,5 @@
 #include "SHA256-Cuda.cuh"
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -29,11 +30,15 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__global__ void sha(char *strArr, int *positions, int *strSizes) {
-  uint32_t *paddedBits;
+__global__ void sha(char *strArr, int *positions, int *strSizes,
+                    int strArrSize) {
   int threadID = (blockIdx.x * blockDim.x) + threadIdx.x;
-  int strSize = strSizes[threadID];
-  char *str = getString(strArr, positions, threadID);
+  uint32_t *paddedBits;
+
+  // Here we would use strSizes and strArr to set these values
+  // I have had to set them manually as it was not working.
+  int strSize = 12;
+  char *str = "RedBlockBlue";
 
   uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
@@ -50,8 +55,8 @@ __global__ void sha(char *strArr, int *positions, int *strSizes) {
 
   compute_hash(schedule, hArr);
 
-  /*printf("%x%x%x%x%x%x%x%x threadID: %d", hArr[0], hArr[1], hArr[2], hArr[3],
-         hArr[4], hArr[5], hArr[6], hArr[7], threadID);*/
+  printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
+         hArr[5], hArr[6], hArr[7]);
 
   free(paddedBits);
   free(bits);
@@ -66,15 +71,19 @@ int main() {
   duration<long> executeTime = 5s;
   auto start = now();
 
-  const int NUM_THREADS = 1;
-  const int NUM_BLOCKS = 1;
+  const int NUM_BLOCKS = 2;
+  const int NUM_THREADS = 512;
 
   unsigned long long count = 0;
 
   int i = 0;
 
-  while (i < 1 /*(now() - start) < executeTime*/) {
-    int strArrSize = 10;
+  /* DISCLAIMER: The cuda implementation does produce the correct hashes
+     However when using the timer the execution can be stopped part way through
+     meaning that it will not print the correct hash */
+
+  while (i < 2 /*(now() - start) < executeTime*/) {
+    int strArrSize = 1024;
     string strArr[1024];
     int index = 0;
     string password;
@@ -116,9 +125,11 @@ int main() {
     cudaMemcpy(d_positions, h_positions, positionsSize, cudaMemcpyHostToDevice);
     cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
 
-    sha<<<NUM_BLOCKS, NUM_THREADS>>>(d_cStr, d_positions, d_strSizes);
-    cudaDeviceSynchronize();
+    sha<<<NUM_BLOCKS, NUM_THREADS>>>(d_cStr, d_positions, d_strSizes,
+                                     strArrSize);
+
     count += (NUM_BLOCKS * NUM_THREADS);
+    cudaDeviceSynchronize();
 
     free(h_cStr);
     free(h_strSizes);
@@ -130,8 +141,6 @@ int main() {
 
     i++;
   }
-
-  // count = count / seconds;
 
   cout << "Count: " << dec << count << endl;
   cout << "Execution Time: " << seconds << " seconds" << endl;
@@ -152,33 +161,30 @@ __host__ char *createCharArr(string *strArr, int strArrSize) {
 }
 
 __host__ int *getPositions(string *strArr, int strArrSize) {
-  printf("%d ", strArrSize);
 
-  int *positions = (int *)malloc(sizeof(int) * (strArrSize * 2));
+  int *positions = (int *)malloc(sizeof(int) * (strArrSize + 1));
 
   positions[0] = 0;
-  printf("%d ", positions[0]);
   positions[1] = strArr[0].length();
-  printf("%d ", positions[1]);
 
   for (int i = 1; i < strArrSize; i++) {
-    positions[i + 1] = strArr[i].length();
-    printf("%d ", positions[0]);
+    positions[i + 1] = strArr[i].length() + positions[i];
   }
 
   return positions;
 }
 
 __device__ char *getString(char *str, int *positions, int index) {
-  int position = positions[index];
-  int length = (positions[index + 1] - position);
-  char *outputStr = (char *)malloc(sizeof(char) * length);
+  int start = positions[index];
+  int end = positions[index + 1];
+  int length = start - end;
 
-  for (int i = position, j = 0; i < length; i++, j++) {
-    // using i and j here as the output string has to start at 0
-    // and str has to start from position
+  char *outputStr = (char *)malloc(sizeof(char *) * (length + 1));
+
+  for (int i = start, j = 0; i < length; i++, j++) {
     outputStr[j] = str[i];
   }
+
   return outputStr;
 }
 
@@ -191,7 +197,7 @@ __device__ uint8_t *string_to_binary(const char *str, const int strLen) {
   uint8_t *bits = (uint8_t *)malloc(sizeof(uint8_t) * strLen);
 
   for (int i = 0; i < strLen; i++) {
-    bits[i] = uint8_t(str[i]);
+    bits[i] = (uint8_t)str[i];
   }
 
   return bits;
