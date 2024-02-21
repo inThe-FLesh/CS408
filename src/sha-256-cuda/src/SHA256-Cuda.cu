@@ -30,22 +30,20 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__global__ void sha(char *strArr, int *positions, int *strSizes,
-                    int strArrSize) {
+__global__ void sha() {
   int threadID = (blockIdx.x * blockDim.x) + threadIdx.x;
-  uint32_t *paddedBits;
 
   // Here we would use strSizes and strArr to set these values
   // I have had to set them manually as it was not working.
   int strSize = 12;
-  char *str = "RedBlockBlue";
+  const char *str = "RedBlockBlue";
 
   uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
   uint8_t *bits = string_to_binary(str, strSize);
 
-  paddedBits = pad_binary(bits, strSize);
+  uint32_t *paddedBits = pad_binary(bits, strSize);
 
   add_length_bits(paddedBits, (strSize * 8));
 
@@ -55,12 +53,14 @@ __global__ void sha(char *strArr, int *positions, int *strSizes,
 
   compute_hash(schedule, hArr);
 
-  printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
-         hArr[5], hArr[6], hArr[7]);
+  /*printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
+         hArr[5], hArr[6], hArr[7]);*/
 
   free(paddedBits);
   free(bits);
   free(schedule);
+
+  return;
 }
 
 int main() {
@@ -71,8 +71,8 @@ int main() {
   duration<long> executeTime = 5s;
   auto start = now();
 
-  const int NUM_BLOCKS = 2;
-  const int NUM_THREADS = 512;
+  const int NUM_BLOCKS = 64;
+  const int NUM_THREADS = 64;
 
   unsigned long long count = 0;
 
@@ -82,63 +82,11 @@ int main() {
      However when using the timer the execution can be stopped part way through
      meaning that it will not print the correct hash */
 
-  while (i < 2 /*(now() - start) < executeTime*/) {
-    int strArrSize = 1024;
-    string strArr[1024];
-    int index = 0;
-    string password;
-
-    std::ifstream dictionary("dictionary.txt");
-
-    while (getline(dictionary, password)) {
-      strArr[index] = password;
-      index++;
-    }
-
-    char *h_cStr = createCharArr(strArr, size(strArr));
-    int *h_positions = getPositions(strArr, size(strArr));
-
-    char *d_cStr;
-    int *d_positions;
-    int *d_strSizes;
-
-    int charCount = 0;
-    for (string str : strArr) {
-      charCount += str.length();
-    }
-
-    size_t cStrSize = sizeof(char) * charCount,
-           positionsSize = (sizeof(int) * size(strArr)) + 1,
-           strSizesBytes = sizeof(char) * charCount;
-
-    int *h_strSizes = (int *)malloc(strSizesBytes);
-
-    for (int i = 0; i < strArrSize; i++) {
-      h_strSizes[i] = size(strArr[i]);
-    }
-
-    cudaMalloc(&d_cStr, cStrSize);
-    cudaMalloc(&d_positions, positionsSize);
-    cudaMalloc(&d_strSizes, strSizesBytes);
-
-    cudaMemcpy(d_cStr, h_cStr, cStrSize, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_positions, h_positions, positionsSize, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_strSizes, h_strSizes, strSizesBytes, cudaMemcpyHostToDevice);
-
-    sha<<<NUM_BLOCKS, NUM_THREADS>>>(d_cStr, d_positions, d_strSizes,
-                                     strArrSize);
+  while ((now() - start) < executeTime) {
+    // cudaDeviceReset();
+    sha<<<NUM_BLOCKS, NUM_THREADS>>>();
 
     count += (NUM_BLOCKS * NUM_THREADS);
-    cudaDeviceSynchronize();
-
-    free(h_cStr);
-    free(h_strSizes);
-    free(h_positions);
-
-    cudaFree(&d_cStr);
-    cudaFree(&d_positions);
-    cudaFree(&d_strSizes);
-
     i++;
   }
 
@@ -175,16 +123,15 @@ __host__ int *getPositions(string *strArr, int strArrSize) {
 }
 
 __device__ char *getString(char *str, int *positions, int index) {
-  int start = positions[index];
-  int end = positions[index + 1];
-  int length = start - end;
+  int position = positions[index];
+  int length = (positions[index + 1] - position);
+  char *outputStr = (char *)malloc(sizeof(char) * length);
 
-  char *outputStr = (char *)malloc(sizeof(char *) * (length + 1));
-
-  for (int i = start, j = 0; i < length; i++, j++) {
+  for (int i = position, j = 0; i < length; i++, j++) {
+    // using i and j here as the output string has to start at 0
+    // and str has to start from position
     outputStr[j] = str[i];
   }
-
   return outputStr;
 }
 
