@@ -35,6 +35,7 @@ void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
   int position = 0;
   uint64_t block = 0;
 
+  // using 0 for these loops may cause problems
   for (int i = 0; i < 18; i++) {
     std::tuple<string, int> cycledPass = cyclePassword(password, position);
     string passwordBits = std::get<0>(cycledPass);
@@ -46,11 +47,23 @@ void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
     uint64_t divider = 0xffffffff00000000;
     block = block ^ salt[i % 2];
 
-    Blowfish fish(P, S, block);
-    block = fish.Encrypt();
+    Blowfish blowfish(P, S, block);
+    block = blowfish.Encrypt();
 
     P[2 * i] = (divider & block) >> 32;
-    P[(2 * i) + 1] = (divider >> 32) & block;
+    P[2 * i + 1] = (divider >> 32) & block;
+  }
+
+  for (int i = 0; i < 4; i++) {
+    for (int n = 0; n < 127; n++) {
+      uint64_t divider = 0xffffffff00000000;
+      block = block ^ salt[i % 2];
+      Blowfish blowfish(P, S, block);
+
+      block = blowfish.Encrypt();
+      S[i][2 * n] = (divider & block) >> 32;
+      S[i][2 * n - 1] = (divider >> 32) & block;
+    }
   }
 }
 
@@ -262,6 +275,8 @@ std::tuple<uint32_t *, uint32_t **> EksBlowfishSetup(int cost, uint64_t *salt,
   S[3] = S4;
 
   initialiseState(P, S);
+
+  expandKey(P, S, password, salt);
 
   std::tuple output = std::make_tuple(P, S);
 

@@ -19,9 +19,10 @@ int main() {
   P = std::get<0>(PsAndS);
   S = std::get<1>(PsAndS);
 
-  /*for (int i = 0; i < 64; i++) {
-    cipherText = EncryptECB(P, S, cipherText);
-  }*/
+  for (int i = 0; i < 64; i++) {
+    Blowfish blowfish(P, S, cipherText);
+    cipherText = blowfish.Encrypt();
+  }
 
   free(P);
 
@@ -33,5 +34,5 @@ int main() {
 
   free(S);
 
-  // std::string output = concatenate(cost, salt, hash);
+  std::string output = concatenate(cost, salt, cipherText);
 }
