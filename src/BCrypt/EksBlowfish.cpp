@@ -43,12 +43,15 @@ void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
   }
 
   for (int i = 0; i < 9; i++) {
+    uint64_t divider = 0xffffffff00000000;
     block = block ^ salt[i % 2];
+
+    Blowfish fish(P, S, block);
+    block = fish.Encrypt();
+
+    P[2 * i] = (divider & block) >> 32;
+    P[(2 * i) + 1] = (divider >> 32) & block;
   }
-
-  Blowfish fish(P, S, block);
-
-  block = fish.Encrypt();
 }
 
 void initialiseState(uint32_t *P, uint32_t **S) {

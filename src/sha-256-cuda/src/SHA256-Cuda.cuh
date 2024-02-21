@@ -10,9 +10,11 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 #include <cuda_runtime.h>
 #include <iomanip>
 #include <iostream>
+#include <strings.h>
 #include <sys/types.h>
 
 using std::bitset;

@@ -1,31 +1,4 @@
 #include "SHA256-Cuda.cuh"
-#include <cstddef>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <fstream>
-#include <strings.h>
-#include <sys/types.h>
-
-#include "SHA256-Cuda.cuh"
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <iterator>
-#include <sys/types.h>
-#define gpuErrchk(ans)                                                         \
-  { gpuAssert((ans), __FILE__, __LINE__); }
-inline void gpuAssert(cudaError_t code, const char *file, int line,
-                      bool abort = true) {
-  if (code != cudaSuccess) {
-    fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file,
-            line);
-    if (abort)
-      exit(code);
-  }
-}
 
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
@@ -66,9 +39,9 @@ __global__ void sha() {
 int main() {
 
   // solution for timer found on stack overflow
-  int seconds = 5;
+  int seconds = 200;
   auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 5s;
+  duration<long> executeTime = 200s;
   auto start = now();
 
   const int NUM_BLOCKS = 64;
