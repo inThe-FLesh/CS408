@@ -1,5 +1,6 @@
 #include "Blowfish.h"
 #include <cstdint>
+#include <cstdlib>
 #include <string>
 #include <tuple>
 

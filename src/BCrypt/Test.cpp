@@ -1,13 +1,14 @@
+#include "Blowfish.h"
 #include <cstdint>
+#include <cstdio>
 #include <ios>
 #include <iostream>
 #include <iterator>
 
 int main() {
-  uint32_t output;
-  uint64_t divider = 0xffffffff00000000;
-  uint64_t block = 0xf1f1f1f1a4a4a4a4;
+  uint64_t string = 0xfe45fac4fe45fac4;
+  Converter converter;
+  std::string output = converter.uint64_tToString(string);
 
-  output = (divider & block) >> 32;
-  output = (divider >> 32) & block;
+  printf("%s", output.c_str());
 }

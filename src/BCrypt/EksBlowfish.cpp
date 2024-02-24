@@ -1,8 +1,4 @@
 #include "EksBlowfish.h"
-#include <cstdint>
-#include <cstdlib>
-#include <string>
-#include <tuple>
 
 // The cyclePassword function is used to get 32 bits of characters
 // and record the last position they were taken from.
@@ -38,16 +34,19 @@ void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
   // using 0 for these loops may cause problems
   for (int i = 0; i < 18; i++) {
     std::tuple<string, int> cycledPass = cyclePassword(password, position);
+
     string passwordBits = std::get<0>(cycledPass);
     position = std::get<1>(cycledPass);
-    P[i] = P[i] ^ std::stoul(passwordBits);
+
+    Converter converter;
+    P[i] = P[i] ^ converter.stringToUint32(passwordBits);
   }
 
   for (int i = 0; i < 9; i++) {
     uint64_t divider = 0xffffffff00000000;
     block = block ^ salt[i % 2];
 
-    Blowfish blowfish(P, S, block);
+    EksBlowfish blowfish(P, S, block);
     block = blowfish.Encrypt();
 
     P[2 * i] = (divider & block) >> 32;
@@ -58,7 +57,7 @@ void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
     for (int n = 0; n < 127; n++) {
       uint64_t divider = 0xffffffff00000000;
       block = block ^ salt[i % 2];
-      Blowfish blowfish(P, S, block);
+      EksBlowfish blowfish(P, S, block);
 
       block = blowfish.Encrypt();
       S[i][2 * n] = (divider & block) >> 32;
@@ -278,7 +277,12 @@ std::tuple<uint32_t *, uint32_t **> EksBlowfishSetup(int cost, uint64_t *salt,
 
   expandKey(P, S, password, salt);
 
-  std::tuple output = std::make_tuple(P, S);
+  for (int i = 0; i < pow(2, cost); i++) {
+    expandKey(P, S, password, 0);
+    expandKey(P, S, 0, salt);
+  }
+
+  std::tuple<uint32_t *, uint32_t **> output = std::make_tuple(P, S);
 
   return output;
 }

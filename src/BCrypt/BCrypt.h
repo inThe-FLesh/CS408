@@ -1,7 +1,10 @@
 #include "EksBlowfish.h"
 #include <cstdint>
+#include <cstdlib>
+#include <string>
+#include <sys/types.h>
+#include <tuple>
 
-class BlowfishString {
-  uint32_t *P;
-  uint32_t **S;
-}
+std::string generateCipherString(uint64_t *cipher, int cipherArrLength);
+
+std::string concatenate(int cost, uint64_t *salt, std::string cipher);
