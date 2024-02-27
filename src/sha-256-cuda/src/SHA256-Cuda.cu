@@ -39,13 +39,13 @@ __global__ void sha() {
 int main() {
 
   // solution for timer found on stack overflow
-  int seconds = 200;
+  int seconds = 5;
   auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 200s;
+  duration<long> executeTime = 5s;
   auto start = now();
 
-  const int NUM_BLOCKS = 64;
-  const int NUM_THREADS = 64;
+  const int NUM_BLOCKS = 32;
+  const int NUM_THREADS = 32;
 
   unsigned long long count = 0;
 
@@ -66,6 +66,8 @@ int main() {
   cout << "Count: " << dec << count << endl;
   cout << "Execution Time: " << seconds << " seconds" << endl;
   cout << "hashes/s: " << count / seconds << endl;
+
+  cudaDeviceReset();
 }
 
 __host__ char *createCharArr(string *strArr, int strArrSize) {

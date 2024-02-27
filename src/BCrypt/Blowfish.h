@@ -49,6 +49,8 @@ struct Converter {
 // 2 classes that are used for blowfish encryption
 // one for the EksBlowfish part of the algorithm
 // and the other for when we encrypt OrpheanBeholderScryDoubt
+//
+// These classes should use an interface
 class EksBlowfish {
 private:
   uint32_t *P;
@@ -100,13 +102,8 @@ private:
   }
 
   uint32_t f(uint32_t word) {
-    uint8_t divider = 0xff;
-    uint8_t *quarters = (uint8_t *)malloc(sizeof(uint8_t) * 4);
+    uint8_t *quarters = getQuarters(word);
     uint32_t output;
-
-    for (int i = 0; i < 4; i++) {
-      quarters[i] = (word >> 8 * i) ^ divider;
-    }
 
     // this takes the first 2 bits and uses them as the index for the column and
     // then it takes the last 6 bits and uses them to get the row
@@ -118,7 +115,20 @@ private:
 
     output = output + S[quarters[3] >> 6][quarters[3] & 0x3f];
 
+    free(quarters);
+
     return output;
+  }
+
+  uint8_t *getQuarters(uint32_t word) {
+    uint8_t divider = 0xff;
+    uint8_t *quarters = (uint8_t *)malloc(sizeof(uint8_t) * 4);
+
+    for (int i = 0; i < 4; i++) {
+      quarters[i] = (word >> 8 * i) ^ divider;
+    }
+
+    return quarters;
   }
 };
 
@@ -163,6 +173,9 @@ public:
       halves[1] = left;
 
       uint64_t output = append64(halves);
+
+      free(halves);
+
       chunks[n] = output;
     }
 
@@ -176,6 +189,8 @@ private:
     uint32_t s2 = S[1][quarters[1]];
     uint32_t s3 = S[2][quarters[2]];
     uint32_t s4 = S[3][quarters[3]];
+
+    free(quarters);
 
     // addition mod 2^32
     s2 = (s1 + s2) % 4294967296;
