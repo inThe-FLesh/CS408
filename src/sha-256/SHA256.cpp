@@ -7,7 +7,10 @@
 
 #include "SHA256.h"
 #include "computation.h"
+#include <bits/stdc++.h>
 #include <cstdlib>
+#include <ios>
+#include <sys/time.h>
 
 void sha(string str) {
   uint8_t *bits;
@@ -47,18 +50,32 @@ int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123"};
   int count = 0;
 
-  // solution for timer found on stack overflow
-  auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 1s;
-  auto start = now();
+  struct timeval start, end;
 
-  while ((now() - start) < executeTime) {
-    for (string str : strArr) {
-      sha(str);
-      count += 1;
-    }
-  }
+  // Timer code adapted from
+  // https://www.geeksforgeeks.org/measure-execution-time-with-high-precision-in-c-c/
+  // start timer.
+  gettimeofday(&start, NULL);
 
-  cout << "Hashes per second: " << dec << count << endl;
+  // unsync the I/O of C and C++.
+  std::ios_base::sync_with_stdio(false);
+
+  sha(strArr[0]);
+  count += 1;
+
+  gettimeofday(&end, NULL);
+
+  double time_taken;
+
+  time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+
+  cout << "Time taken by program is : " << std::fixed << time_taken
+       << std::setprecision(6);
+  cout << " sec" << endl;
+
+  double hashesPerSec = 60.0 / time_taken;
+  cout << "Hashes per second: " << hashesPerSec << endl;
   // sha(strArr[0]);
+  return 0;
 }
