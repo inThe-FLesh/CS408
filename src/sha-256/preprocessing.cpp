@@ -4,12 +4,18 @@
 
 #include "preprocessing.h"
 #include <cstdint>
+#include <stdexcept>
 
 // Convert the string into binary representation. 8 bits per character.
 uint8_t *string_to_binary(const string &str) {
   // breaks up each word in the string to an 8-bit binary number and adds them
   // to  the array.
   uint8_t *bits = (uint8_t *)malloc(sizeof(uint8_t) * str.size());
+
+  if (bits == NULL) {
+    throw std::runtime_error(
+        "string_to_binary failed to allocate memory for bits");
+  }
 
   for (int i = 0; i < str.length(); i++) {
     bits[i] = uint8_t(str[i]);
@@ -23,6 +29,11 @@ uint8_t *string_to_binary(const string &str) {
 uint32_t *pad_binary(uint8_t *bits, int size) {
 
   uint32_t *paddedBits = (uint32_t *)malloc(sizeof(uint32_t) * 16);
+
+  if (paddedBits == NULL) {
+    throw std::runtime_error(
+        "pad_binary failed to allocate memory for paddedBits");
+  }
 
   // dividing by 8 to get the number of 8 bit chunks
   int index = size;

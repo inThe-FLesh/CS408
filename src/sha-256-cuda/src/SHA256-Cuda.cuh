@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <iostream>
 #include <strings.h>
+#include <sys/time.h>
 #include <sys/types.h>
 
 using std::bitset;

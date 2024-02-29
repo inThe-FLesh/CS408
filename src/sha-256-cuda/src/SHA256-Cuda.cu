@@ -1,11 +1,14 @@
 #include "SHA256-Cuda.cuh"
+#include <cassert>
+#include <cstdio>
+#include <exception>
 
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__global__ void sha() {
-  int threadID = (blockIdx.x * blockDim.x) + threadIdx.x;
+__device__ int succesfulThreads;
 
+__global__ void sha() {
   // Here we would use strSizes and strArr to set these values
   // I have had to set them manually as it was not working.
   int strSize = 12;
@@ -26,8 +29,12 @@ __global__ void sha() {
 
   compute_hash(schedule, hArr);
 
-  /*printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
-         hArr[5], hArr[6], hArr[7]);*/
+  assert(hArr[0] == 0xf8f05f7);
+
+  printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
+         hArr[5], hArr[6], hArr[7]);
+
+  succesfulThreads += 1;
 
   free(paddedBits);
   free(bits);
@@ -37,34 +44,43 @@ __global__ void sha() {
 }
 
 int main() {
-  // solution for timer found on stack overflow
-  int seconds = 5;
-  auto now = std::chrono::steady_clock::now;
-  duration<long> executeTime = 5s;
-  auto start = now();
 
-  const int NUM_BLOCKS = 32;
-  const int NUM_THREADS = 32;
+  int NUM_BLOCKS = 32;
+  int NUM_THREADS = 32;
 
-  unsigned long long count = 0;
+  struct timeval start, end;
 
-  int i = 0;
-
-  /* DISCLAIMER: The cuda implementation does produce the correct hashes
-     However when using the timer the execution can be stopped part way through
-     meaning that it will not print the correct hash */
-
-  while ((now() - start) < executeTime) {
-    sha<<<NUM_BLOCKS, NUM_THREADS>>>();
-
-    count += (NUM_BLOCKS * NUM_THREADS);
-    i++;
-  }
-
-  cout << "Count: " << dec << count << endl;
-  cout << "Execution Time: " << seconds << " seconds" << endl;
-  cout << "hashes/s: " << count / seconds << endl;
   cudaDeviceReset();
+
+  // Timer code adapted from
+  // https://www.geeksforgeeks.org/measure-execution-time-with-high-precision-in-c-c/
+  // start timer.
+  gettimeofday(&start, NULL);
+
+  // unsync the I/O of C and C++.
+  std::ios_base::sync_with_stdio(false);
+
+  sha<<<NUM_BLOCKS, NUM_THREADS>>>();
+
+  cudaDeviceSynchronize();
+
+  gettimeofday(&end, NULL);
+
+  double time_taken;
+
+  time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  time_taken = (time_taken + (end.tv_usec - start.tv_usec)) * 1e-6;
+
+  int succesfulThreads;
+
+  cudaMemcpyFromSymbol(&succesfulThreads, "succesfulThreads",
+                       sizeof(succesfulThreads), cudaMemcpyDeviceToHost);
+
+  int hashesPerSecond = (int)60 * succesfulThreads / time_taken;
+
+  cout << "Execution Time: " << time_taken << " seconds" << endl;
+  cout << "hashes/s: " << hashesPerSecond << endl;
+  cout << "succesfulThreads: " << succesfulThreads << endl;
 }
 
 __host__ char *createCharArr(string *strArr, int strArrSize) {
@@ -167,7 +183,8 @@ __device__ uint32_t *pad_binary(uint8_t *bits, int size) {
   return paddedBits;
 }
 
-// Uses the last 64 bits in order to record the length of the original message.
+// Uses the last 64 bits in order to record the length of the original
+// message.
 __device__ void add_length_bits(uint32_t *paddedBits, int sizeBits) {
   uint64_t lengthBits = sizeBits;
   uint64_t divider = 0xFFFFFFFF00000000;
@@ -240,8 +257,8 @@ __device__ uint32_t right_rotation(uint32_t bits, int n) {
   // bits
   n = n % 32;
 
-  // optimised here to do the rotate right in one instruction. Improved hashrate
-  // by roughly 100,000 hashes per second
+  // optimised here to do the rotate right in one instruction. Improved
+  // hashrate by roughly 100,000 hashes per second
 
   uint32_t shiftedBits = (bits >> n) ^ (bits << (32 - n));
   // uint32_t rotatedBits = bits << (32 - n);
@@ -267,7 +284,8 @@ __device__ uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
 // The formula to derive any value for W at position T
 /*void build_message_schedule(uint32_t *W) {
   for (int t = 16; t <= 63; t++) {
-    W[t] = sigma_one(W[t - 2]) + W[t - 7] + sigma_zero(W[t - 15]) + (W[t - 16]);
+    W[t] = sigma_one(W[t - 2]) + W[t - 7] + sigma_zero(W[t - 15]) + (W[t -
+16]);
   }
 }*/
 

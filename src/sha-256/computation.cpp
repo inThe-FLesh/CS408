@@ -3,6 +3,7 @@
 //
 #include "computation.h"
 #include <cstdint>
+#include <stdexcept>
 /*
  * function that takes a 32-bit number and right shifts it by n
  * initially shifts the bits right
@@ -78,6 +79,11 @@ uint32_t right_rotation(uint32_t bits, int n) {
 uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
 
   uint32_t *schedule = (uint32_t *)malloc(sizeof(uint32_t) * 64);
+
+  if (schedule == NULL) {
+    throw std::runtime_error(
+        "prepare_message_schedule failed to allocate memory for schedule");
+  }
 
   for (int i = 0; i < 16; i++) {
     schedule[i] = paddedBits[i];

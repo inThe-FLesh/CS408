@@ -9,10 +9,12 @@
 #include "computation.h"
 #include <bits/stdc++.h>
 #include <cstdlib>
+#include <exception>
 #include <ios>
+#include <iostream>
 #include <sys/time.h>
 
-void sha(string str) {
+int sha(string str) {
   uint8_t *bits;
   uint32_t *paddedBits;
   int bitSize = 0;
@@ -20,35 +22,43 @@ void sha(string str) {
   uint32_t hArr[] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
                      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
-  bits = string_to_binary(str);
+  try {
 
-  paddedBits = pad_binary(bits, str.size());
+    bits = string_to_binary(str);
 
-  add_length_bits(paddedBits, (str.size() * 8));
+    paddedBits = pad_binary(bits, str.size());
 
-  uint32_t *schedule;
+    add_length_bits(paddedBits, (str.size() * 8));
 
-  schedule = prepare_message_schedule(paddedBits);
+    uint32_t *schedule;
 
-  compute_hash(schedule, hArr);
+    schedule = prepare_message_schedule(paddedBits);
 
-  /*cout << "hash: ";
+    compute_hash(schedule, hArr);
 
-  for (uint32_t h : hArr) {
-    cout << setfill('0') << hex << setw(8) << h;
-    cout << setfill('0') << hex << setw(8) << h;
+    cout << "hash: ";
+
+    for (uint32_t h : hArr) {
+      cout << setfill('0') << hex << setw(8) << h;
+      cout << setfill('0') << hex << setw(8) << h;
+    }
+
+    cout << endl;
+
+    free(paddedBits);
+    free(bits);
+    free(schedule);
+
+  } catch (const std::exception &exception) {
+    std::cerr << "Exception: " << exception.what() << endl;
+    return 1;
   }
 
-  cout << endl;*/
-
-  free(paddedBits);
-  free(bits);
-  free(schedule);
+  return 0;
 }
 
 int main() {
   string strArr[] = {"RedBlockBlue", "12345", "zorgLover123"};
-  int count = 0;
 
   struct timeval start, end;
 
@@ -60,8 +70,12 @@ int main() {
   // unsync the I/O of C and C++.
   std::ios_base::sync_with_stdio(false);
 
-  sha(strArr[0]);
-  count += 1;
+  int shaError = sha(strArr[0]);
+
+  if (shaError == 1) {
+    cout << "sha function failed" << endl;
+    return 1;
+  }
 
   gettimeofday(&end, NULL);
 
