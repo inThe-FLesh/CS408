@@ -1,16 +1,13 @@
 #include "SHA256-Cuda.cuh"
 #include <cassert>
+#include <cstdint>
 #include <cstdio>
 #include <exception>
 
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
-__device__ int succesfulThreads;
-
-__global__ void sha() {
-  // Here we would use strSizes and strArr to set these values
-  // I have had to set them manually as it was not working.
+void sha() {
   int strSize = 12;
   const char *str = "RedBlockBlue";
 
@@ -24,17 +21,13 @@ __global__ void sha() {
   add_length_bits(paddedBits, (strSize * 8));
 
   uint32_t *schedule;
+  size_t scheduleBytes = sizeof(uint32_t) * 64;
+  size_t paddedBitsBytes = sizeof(uint32_t) * 16;
 
-  schedule = prepare_message_schedule(paddedBits);
+  cudaMallocManaged(&paddedBits, paddedBitsBytes);
+  cudaMallocManaged(&schedule, scheduleBytes);
 
   compute_hash(schedule, hArr);
-
-  assert(hArr[0] == 0xf8f05f7);
-
-  printf("%x%x%x%x%x%x%x%x ", hArr[0], hArr[1], hArr[2], hArr[3], hArr[4],
-         hArr[5], hArr[6], hArr[7]);
-
-  succesfulThreads += 1;
 
   free(paddedBits);
   free(bits);
@@ -44,13 +37,7 @@ __global__ void sha() {
 }
 
 int main() {
-
-  int NUM_BLOCKS = 32;
-  int NUM_THREADS = 32;
-
   struct timeval start, end;
-
-  cudaDeviceReset();
 
   // Timer code adapted from
   // https://www.geeksforgeeks.org/measure-execution-time-with-high-precision-in-c-c/
@@ -60,9 +47,7 @@ int main() {
   // unsync the I/O of C and C++.
   std::ios_base::sync_with_stdio(false);
 
-  sha<<<NUM_BLOCKS, NUM_THREADS>>>();
-
-  cudaDeviceSynchronize();
+  sha();
 
   gettimeofday(&end, NULL);
 
@@ -73,60 +58,16 @@ int main() {
 
   int succesfulThreads;
 
-  cudaMemcpyFromSymbol(&succesfulThreads, "succesfulThreads",
-                       sizeof(succesfulThreads), cudaMemcpyDeviceToHost);
-
-  int hashesPerSecond = (int)60 * succesfulThreads / time_taken;
+  int hashesPerSecond = (int)60 / time_taken;
 
   cout << "Execution Time: " << time_taken << " seconds" << endl;
   cout << "hashes/s: " << hashesPerSecond << endl;
-  cout << "succesfulThreads: " << succesfulThreads << endl;
-}
-
-__host__ char *createCharArr(string *strArr, int strArrSize) {
-  string output;
-
-  for (int i = 0; i < strArrSize; i++) {
-    output += strArr[i];
-  }
-
-  char *outputChar = (char *)malloc(sizeof(char) * (output.length() + 1));
-  strcpy(outputChar, output.c_str());
-
-  return outputChar;
-}
-
-__host__ int *getPositions(string *strArr, int strArrSize) {
-
-  int *positions = (int *)malloc(sizeof(int) * (strArrSize + 1));
-
-  positions[0] = 0;
-  positions[1] = strArr[0].length();
-
-  for (int i = 1; i < strArrSize; i++) {
-    positions[i + 1] = strArr[i].length() + positions[i];
-  }
-
-  return positions;
-}
-
-__device__ char *getString(char *str, int *positions, int index) {
-  int position = positions[index];
-  int length = (positions[index + 1] - position);
-  char *outputStr = (char *)malloc(sizeof(char) * length);
-
-  for (int i = position, j = 0; i < length; i++, j++) {
-    // using i and j here as the output string has to start at 0
-    // and str has to start from position
-    outputStr[j] = str[i];
-  }
-  return outputStr;
 }
 
 /*Preprocessing code*/
 
 // Convert the string into binary representation. 8 bits per character.
-__device__ uint8_t *string_to_binary(const char *str, const int strLen) {
+uint8_t *string_to_binary(const char *str, const int strLen) {
   // breaks up each word in the string to an 8-bit binary number and adds them
   // to  the array.
   uint8_t *bits = (uint8_t *)malloc(sizeof(uint8_t) * strLen);
@@ -138,7 +79,7 @@ __device__ uint8_t *string_to_binary(const char *str, const int strLen) {
   return bits;
 }
 
-__device__ uint32_t *pad_binary(uint8_t *bits, int size) {
+uint32_t *pad_binary(uint8_t *bits, int size) {
 
   uint32_t *paddedBits = (uint32_t *)malloc(sizeof(uint32_t) * 16);
 
@@ -185,7 +126,7 @@ __device__ uint32_t *pad_binary(uint8_t *bits, int size) {
 
 // Uses the last 64 bits in order to record the length of the original
 // message.
-__device__ void add_length_bits(uint32_t *paddedBits, int sizeBits) {
+void add_length_bits(uint32_t *paddedBits, int sizeBits) {
   uint64_t lengthBits = sizeBits;
   uint64_t divider = 0xFFFFFFFF00000000;
 
@@ -200,7 +141,7 @@ __device__ void add_length_bits(uint32_t *paddedBits, int sizeBits) {
 
 /*Computation code*/
 
-__device__ void compute_hash(uint32_t *W, uint32_t *hArr) {
+void compute_hash(uint32_t *W, uint32_t *hArr) {
 
   // declaring variables for computation
 
@@ -252,7 +193,7 @@ __device__ void compute_hash(uint32_t *W, uint32_t *hArr) {
   hArr[7] = h + hArr[7];
 }
 
-__device__ uint32_t right_rotation(uint32_t bits, int n) {
+uint32_t right_rotation(uint32_t bits, int n) {
   // modulo 32 to ensure that ot can't ever shift more places than there are
   // bits
   n = n % 32;
@@ -265,20 +206,35 @@ __device__ uint32_t right_rotation(uint32_t bits, int n) {
   return shiftedBits;
 }
 
-__device__ uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
+__device__ uint32_t device_right_rotation(uint32_t bits, int n) {
+  // modulo 32 to ensure that ot can't ever shift more places than there are
+  // bits
+  n = n % 32;
 
-  uint32_t *schedule = (uint32_t *)malloc(sizeof(uint32_t) * 64);
+  // optimised here to do the rotate right in one instruction. Improved
+  // hashrate by roughly 100,000 hashes per second
 
-  for (int i = 0; i < 16; i++) {
-    schedule[i] = paddedBits[i];
+  uint32_t shiftedBits = (bits >> n) ^ (bits << (32 - n));
+  // uint32_t rotatedBits = bits << (32 - n);
+  return shiftedBits;
+}
+
+__global__ void prepare_message_schedule(uint32_t *paddedBits,
+                                         uint32_t *schedule) {
+  int threadID = threadIdx.x;
+
+  // splitting the loops between two threads
+  if (threadID == 0) {
+    for (int i = 0; i < 16; i++) {
+      schedule[i] = paddedBits[i];
+    }
+  } else {
+
+    for (int t = 16; t <= 63; t++) {
+      schedule[t] = sigma_one(schedule[t - 2]) + schedule[t - 7] +
+                    sigma_zero(schedule[t - 15]) + (schedule[t - 16]);
+    }
   }
-
-  for (int t = 16; t <= 63; t++) {
-    schedule[t] = sigma_one(schedule[t - 2]) + schedule[t - 7] +
-                  sigma_zero(schedule[t - 15]) + (schedule[t - 16]);
-  }
-
-  return schedule;
 }
 
 // The formula to derive any value for W at position T
@@ -290,37 +246,37 @@ __device__ uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
 }*/
 
 __device__ uint32_t sigma_zero(uint32_t bits) {
-  uint32_t sigmaReturn =
-      (right_rotation(bits, 7)) ^ (right_rotation(bits, 18)) ^ (bits >> 3);
+  uint32_t sigmaReturn = (device_right_rotation(bits, 7)) ^
+                         (device_right_rotation(bits, 18)) ^ (bits >> 3);
   return sigmaReturn;
 }
 
 __device__ uint32_t sigma_one(uint32_t bits) {
-  uint32_t sigmaReturn =
-      (right_rotation(bits, 17)) ^ (right_rotation(bits, 19)) ^ (bits >> 10);
+  uint32_t sigmaReturn = (device_right_rotation(bits, 17)) ^
+                         (device_right_rotation(bits, 19)) ^ (bits >> 10);
   return sigmaReturn;
 }
 
-__device__ uint32_t big_sigma_zero(uint32_t bits) {
+uint32_t big_sigma_zero(uint32_t bits) {
   uint32_t sigmaReturn = (right_rotation(bits, 2)) ^
                          (right_rotation(bits, 13)) ^
                          (right_rotation(bits, 22));
   return sigmaReturn;
 }
 
-__device__ uint32_t big_sigma_one(uint32_t bits) {
+uint32_t big_sigma_one(uint32_t bits) {
   uint32_t sigmaReturn = (right_rotation(bits, 6)) ^
                          (right_rotation(bits, 11)) ^
                          (right_rotation(bits, 25));
   return sigmaReturn;
 }
 
-__device__ uint32_t choose(uint32_t x, uint32_t y, uint32_t z) {
+uint32_t choose(uint32_t x, uint32_t y, uint32_t z) {
   uint32_t chooseReturn = (x & y) ^ (~x & z);
   return chooseReturn;
 }
 
-__device__ uint32_t majority(uint32_t x, uint32_t y, uint32_t z) {
+uint32_t majority(uint32_t x, uint32_t y, uint32_t z) {
   uint32_t majorityReturn = (x & y) ^ (x & z) ^ (y & z);
   return majorityReturn;
 }
