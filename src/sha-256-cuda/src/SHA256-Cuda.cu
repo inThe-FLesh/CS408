@@ -37,7 +37,6 @@ __global__ void sha() {
 }
 
 int main() {
-
   // solution for timer found on stack overflow
   int seconds = 5;
   auto now = std::chrono::steady_clock::now;
@@ -56,7 +55,6 @@ int main() {
      meaning that it will not print the correct hash */
 
   while ((now() - start) < executeTime) {
-    // cudaDeviceReset();
     sha<<<NUM_BLOCKS, NUM_THREADS>>>();
 
     count += (NUM_BLOCKS * NUM_THREADS);
@@ -66,7 +64,6 @@ int main() {
   cout << "Count: " << dec << count << endl;
   cout << "Execution Time: " << seconds << " seconds" << endl;
   cout << "hashes/s: " << count / seconds << endl;
-
   cudaDeviceReset();
 }
 

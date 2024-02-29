@@ -7,71 +7,74 @@
 std::tuple<uint32_t *, uint32_t **> EksBlowfishSetup(int cost, uint64_t *salt,
                                                      char *password) {
 
-    uint32_t *P = (uint32_t *)malloc(sizeof(uint32_t) * 18);
-    uint32_t *S1 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
-    uint32_t *S2 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
-    uint32_t *S3 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
-    uint32_t *S4 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
-    uint32_t **S = (uint32_t **)malloc(sizeof(uint32_t *) * 4);
+  uint32_t *P = (uint32_t *)malloc(sizeof(uint32_t) * 18);
+  uint32_t *S1 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
+  uint32_t *S2 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
+  uint32_t *S3 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
+  uint32_t *S4 = (uint32_t *)malloc(sizeof(uint32_t) * 256);
+  uint32_t **S = (uint32_t **)malloc(sizeof(uint32_t *) * 4);
 
-    S[0] = S1;
-    S[1] = S2;
-    S[2] = S3;
-    S[3] = S4;
+  S[0] = S1;
+  S[1] = S2;
+  S[2] = S3;
+  S[3] = S4;
 
-    initialiseState(P, S);
+  initialiseState(P, S);
 
-    expandKey(P, S, password, salt);
+  expandKey(P, S, password, salt);
 
-    uint64_t zeroSalt[2] = {0x0, 0x0};
+  uint64_t zeroSalt[2] = {0x0, 0x0};
 
-    for (int i = 0; i < pow(2, cost); i++) {
-        expandKey(P, S, password, zeroSalt);
-        expandKey(P, S, "", salt);
-    }
+  char charSalt[16] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',
+                       '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
 
-    std::tuple<uint32_t *, uint32_t **> output = std::make_tuple(P, S);
+  for (int i = 0; i < pow(2, cost); i++) {
+    expandKey(P, S, password, zeroSalt);
+    expandKey(P, S, charSalt, zeroSalt);
+  }
 
-    return output;
+  std::tuple<uint32_t *, uint32_t **> output = std::make_tuple(P, S);
+
+  return output;
 }
 
-void expandKey(uint32_t *P, uint32_t **S, string password, uint64_t *salt) {
-    int position = 0;
-    uint64_t block = 0;
+void expandKey(uint32_t *P, uint32_t **S, char *password, uint64_t *salt) {
+  int position = 0;
+  uint64_t block = 0;
 
-    // using 0 for these loops may cause problems
-    for (int i = 0; i < 18; i++) {
-        std::tuple<string, int> cycledPass = cyclePassword(password, position);
+  // using 0 for these loops may cause problems
+  for (int i = 0; i < 18; i++) {
+    std::tuple<string, int> cycledPass = cyclePassword(password, position);
 
-        string passwordBits = std::get<0>(cycledPass);
-        position = std::get<1>(cycledPass);
+    string passwordBits = std::get<0>(cycledPass);
+    position = std::get<1>(cycledPass);
 
-        Converter converter;
-        P[i] = P[i] ^ converter.stringToUint32(passwordBits);
+    Converter converter;
+    P[i] = P[i] ^ converter.stringToUint32(passwordBits);
+  }
+
+  for (int i = 0; i < 9; i++) {
+    uint64_t divider = 0xffffffff00000000;
+    block = block ^ salt[i % 2];
+
+    EksBlowfish blowfish(P, S, block);
+    block = blowfish.Encrypt();
+
+    P[2 * i] = (divider & block) >> 32;
+    P[2 * i + 1] = (divider >> 32) & block;
+  }
+
+  for (int i = 0; i < 4; i++) {
+    for (int n = 0; n < 127; n++) {
+      uint64_t divider = 0xffffffff00000000;
+      block = block ^ salt[i % 2];
+      EksBlowfish blowfish(P, S, block);
+
+      block = blowfish.Encrypt();
+      S[i][2 * n] = (divider & block) >> 32;
+      S[i][2 * n - 1] = (divider >> 32) & block;
     }
-
-    for (int i = 0; i < 9; i++) {
-        uint64_t divider = 0xffffffff00000000;
-        block = block ^ salt[i % 2];
-
-        EksBlowfish blowfish(P, S, block);
-        block = blowfish.Encrypt();
-
-        P[2 * i] = (divider & block) >> 32;
-        P[2 * i + 1] = (divider >> 32) & block;
-    }
-
-    for (int i = 0; i < 4; i++) {
-        for (int n = 0; n < 127; n++) {
-            uint64_t divider = 0xffffffff00000000;
-            block = block ^ salt[i % 2];
-            EksBlowfish blowfish(P, S, block);
-
-            block = blowfish.Encrypt();
-            S[i][2 * n] = (divider & block) >> 32;
-            S[i][2 * n - 1] = (divider >> 32) & block;
-        }
-    }
+  }
 }
 
 std::tuple<string, int> cyclePassword(string password, int position) {

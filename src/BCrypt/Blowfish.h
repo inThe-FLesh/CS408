@@ -33,14 +33,14 @@ struct Converter {
     return output;
   }
 
-  virtual std::string uint64_tToString(uint64_t cipher) {
+  virtual unsigned char *uint64_tToString(uint64_t cipher) {
     const uint8_t divider = 0xff;
-    std::string output = "";
+    unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * 8);
     for (int i = 0; i < 8; i++) {
-      output += (char)(cipher & divider);
+      bytes[i] = (unsigned char)(cipher & divider);
       cipher = cipher >> 8;
     }
-    return output;
+    return bytes;
   }
 };
 
