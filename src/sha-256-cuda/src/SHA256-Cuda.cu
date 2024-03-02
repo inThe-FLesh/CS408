@@ -7,6 +7,18 @@
 /*I had to move all of the functions from the other files
   into this file, otherwise it wouldn't build correctly*/
 
+#define gpuErrchk(ans)                                                         \
+  { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line,
+                      bool abort = true) {
+  if (code != cudaSuccess) {
+    fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file,
+            line);
+    if (abort)
+      exit(code);
+  }
+}
+
 void sha() {
   int strSize = 12;
   const char *str = "RedBlockBlue";
@@ -16,22 +28,57 @@ void sha() {
 
   uint8_t *bits = string_to_binary(str, strSize);
 
-  uint32_t *paddedBits = pad_binary(bits, strSize);
+  uint32_t *h_paddedBits = pad_binary(bits, strSize);
 
-  add_length_bits(paddedBits, (strSize * 8));
+  add_length_bits(h_paddedBits, (strSize * 8));
 
-  uint32_t *schedule;
-  size_t scheduleBytes = sizeof(uint32_t) * 64;
-  size_t paddedBitsBytes = sizeof(uint32_t) * 16;
+  uint32_t *h_schedule = (uint32_t *)malloc(sizeof(uint32_t) * 64);
 
-  cudaMallocManaged(&paddedBits, paddedBitsBytes);
-  cudaMallocManaged(&schedule, scheduleBytes);
+  // declaring the device pointers
+  uint32_t *d_paddedBits;
+  uint32_t *d_schedule;
 
-  compute_hash(schedule, hArr);
+  size_t paddedBitsSize = sizeof(uint32_t) * 16;
+  size_t scheduleSize = sizeof(uint32_t) * 64;
 
-  free(paddedBits);
+  cudaMalloc(&d_paddedBits, paddedBitsSize);
+  cudaMalloc(&d_schedule, scheduleSize);
+
+  cudaMemcpy(d_paddedBits, h_paddedBits, paddedBitsSize,
+             cudaMemcpyHostToDevice);
+
+  cudaMemcpy(d_schedule, h_schedule, scheduleSize, cudaMemcpyHostToDevice);
+
+  cudaDeviceSynchronize();
+
+  cudaMemcpy(h_paddedBits, d_paddedBits, paddedBitsSize,
+             cudaMemcpyDeviceToHost);
+
+  cudaMemcpy(h_schedule, d_schedule, scheduleSize, cudaMemcpyDeviceToHost);
+
+  cudaFree(d_paddedBits);
+  cudaFree(d_schedule);
+
+  prepare_message_schedule<<<1, 2>>>(h_paddedBits, h_schedule);
+  gpuErrchk(cudaPeekAtLastError());
+  gpuErrchk(cudaDeviceSynchronize());
+
+  cudaDeviceSynchronize();
+
+  compute_hash(h_schedule, hArr);
+
+  cout << "hash: ";
+
+  for (uint32_t h : hArr) {
+    cout << setfill('0') << hex << setw(8) << h;
+    cout << setfill('0') << hex << setw(8) << h;
+  }
+
+  cout << endl;
+
   free(bits);
-  free(schedule);
+  free(h_paddedBits);
+  free(h_schedule);
 
   return;
 }
@@ -223,8 +270,13 @@ __global__ void prepare_message_schedule(uint32_t *paddedBits,
                                          uint32_t *schedule) {
   int threadID = threadIdx.x;
 
+  assert(paddedBits != NULL);
+  assert(schedule != NULL);
+
+  printf("%d", threadID);
+
   // splitting the loops between two threads
-  if (threadID == 0) {
+  if (threadID == 1) {
     for (int i = 0; i < 16; i++) {
       schedule[i] = paddedBits[i];
     }
