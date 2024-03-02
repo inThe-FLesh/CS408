@@ -35,7 +35,7 @@ struct Converter {
 
   virtual unsigned char *uint64_tToString(uint64_t cipher) {
     const uint8_t divider = 0xff;
-    unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * 8);
+    unsigned char *bytes = (unsigned char *)malloc(sizeof(char) * 8);
     for (int i = 0; i < 8; i++) {
       bytes[i] = (unsigned char)(cipher & divider);
       cipher = cipher >> 8;
