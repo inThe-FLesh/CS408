@@ -7,45 +7,6 @@
 #include <ostream>
 #include <string>
 
-// abstract class that is used to convert uints to strings and vice versa
-// in a way that suits the algorithm
-
-struct Converter {
-  virtual uint32_t stringToUint32(std::string str) {
-    uint32_t output = 0;
-    assert(str.length() <= 4);
-    for (int i = 0; i < str.length(); i++) {
-      uint8_t character = (uint8_t)str[i];
-      output += character << (24 - (8 * i));
-    }
-
-    return output;
-  }
-
-  virtual uint64_t stringToUint64(std::string str) {
-    uint64_t output = 0;
-    assert(str.length() <= 8);
-    for (int i = 0; i < str.length(); i++) {
-      uint8_t character = (uint8_t)str[i];
-      output += character << (56 - (8 * i));
-    }
-
-    return output;
-  }
-
-  virtual unsigned char *uint64_tToString(uint64_t cipher) {
-    const uint8_t divider = 0xff;
-    unsigned char *bytes = (unsigned char *)malloc(sizeof(char) * 8);
-    for (int i = 0; i < 8; i++) {
-      bytes[i] = (unsigned char)(cipher & divider);
-      cipher = cipher >> 8;
-    }
-    return bytes;
-  }
-};
-
-// end of abstract class
-
 // 2 classes that are used for blowfish encryption
 // one for the EksBlowfish part of the algorithm
 // and the other for when we encrypt OrpheanBeholderScryDoubt
@@ -57,52 +18,84 @@ private:
   int numChunks;
   uint32_t *P;
   uint32_t **S;
-  std::string cText;
+  uint8_t *cText;
 
 public:
-  Blowfish(uint32_t *P, uint32_t **S, std::string cText) {
+  Blowfish(uint32_t *P, uint32_t **S, uint8_t *cText) {
     this->P = P;
     this->S = S;
     this->cText = cText;
   }
 
-  uint64_t *EncryptECB() {
-    uint64_t *chunks = getChunks(cText);
+  uint8_t *Encrypt() {
+    uint32_t *cText32Bit = convert_to_32bit(cText);
 
-    for (int n = 0; n < numChunks; n++) {
-      uint32_t *halves = getHalves(chunks[n]);
-      uint32_t left = halves[0];
-      uint32_t right = halves[1];
+    for (int i = 0; i < 16; i++) {
+      // doing the switch of the left and right halves with the mod of i
+      // pointers are used so that I don't have to waste instructions by putting
+      // the values back into the array
+      uint32_t *leftBytes = &cText32Bit[i % 2];
+      uint32_t *rightBytes = &cText32Bit[(i + 1) % 2];
 
-      for (int i = 0; i < 16; i++) {
-        left = left ^ P[i];
-        right = f(left) ^ right;
+      *leftBytes = *leftBytes ^ P[i];
+      *leftBytes = f(*leftBytes);
 
-        uint32_t tempLeft = left;
-
-        left = right;
-        right = tempLeft;
-      }
-
-      // the final swap of left and right happens here
-      // without wasting instructions swapping the variables
-      left = left ^ P[16];
-      right = right ^ P[17];
-
-      halves[0] = right;
-      halves[1] = left;
-
-      uint64_t output = append64(halves);
-
-      free(halves);
-
-      chunks[n] = output;
+      *rightBytes = *rightBytes ^ *leftBytes;
     }
 
-    return chunks;
+    cText32Bit[1] = cText32Bit[1] ^ P[17];
+    cText32Bit[0] = cText32Bit[0] ^ P[16];
+
+    return convert_to_bytes(cText32Bit);
   }
 
 private:
+  uint8_t *convert_to_bytes(uint32_t *bits) {
+    uint8_t divider = 0xff;
+    uint8_t *bytes = (uint8_t *)malloc(sizeof(uint8_t) * 8);
+    uint32_t leftBits = bits[0];
+    uint32_t rightBits = bits[1];
+
+    for (int i = 0; i < 4; i++) {
+      uint8_t test = divider & leftBits;
+      bytes[i] = divider & leftBits;
+      leftBits = leftBits >> 8;
+    }
+
+    for (int i = 4; i < 8; i++) {
+      uint8_t test2 = divider & rightBits;
+      bytes[i] = divider & rightBits;
+      rightBits = rightBits >> 8;
+    }
+
+    return bytes;
+  }
+
+  uint32_t *convert_to_32bit(uint8_t *bytes) {
+    uint32_t leftBytes = 0;
+    uint32_t rightBytes = 0;
+    uint32_t *output = (uint32_t *)malloc(sizeof(uint32_t) * 2);
+
+    for (int i = 0; i < 3; i++) {
+      leftBytes += bytes[i];
+      leftBytes = leftBytes << 8;
+    }
+
+    leftBytes += bytes[3];
+
+    for (int i = 4; i < 7; i++) {
+      rightBytes += bytes[i];
+      rightBytes = rightBytes << 8;
+    }
+
+    rightBytes += bytes[7];
+
+    output[0] = leftBytes;
+    output[1] = rightBytes;
+
+    return output;
+  }
+
   uint32_t f(uint32_t block) {
     uint8_t *quarters = getQuarters(block);
     uint32_t s1 = S[0][quarters[0]];
@@ -120,15 +113,6 @@ private:
     return s4;
   }
 
-  uint64_t append64(uint32_t *halves) {
-    uint64_t left = halves[0];
-    uint64_t right = halves[1];
-
-    uint64_t output = (left << 32) + right;
-
-    return output;
-  }
-
   uint8_t *getQuarters(uint32_t block) {
     uint8_t *quarters = (uint8_t *)malloc(sizeof(uint8_t) * 4);
     uint8_t divider = 0xff;
@@ -139,52 +123,5 @@ private:
     }
 
     return quarters;
-  }
-
-  uint32_t *getHalves(uint64_t chunk) {
-    uint64_t divider = 0x00000000ffffffff;
-    uint32_t left = (chunk >> 32) & divider;
-    uint32_t right = chunk & divider;
-
-    uint32_t *halves = (uint32_t *)malloc(sizeof(uint32_t) * 2);
-
-    halves[0] = left;
-    halves[1] = right;
-
-    return halves;
-  }
-
-  uint64_t *getChunks(std::string cText) {
-    // getting the length of string in bits
-    // then finding the number of 64 bit chinks
-    int length = cText.length();
-    assert(length != 0);
-
-    // 8 is used here as 64 bits is equivalent to 8 bytes
-    numChunks = length / 8;
-
-    // using the PKCS#5 standard here and appending
-    // the the hex value of the number of padding characters needed
-    if (numChunks == 0) {
-      size_t padLength = length % 8;
-      for (int i = 0; i < padLength; i++) {
-        char appendedChar = (char)padLength;
-        cText.append(padLength, appendedChar);
-      }
-      numChunks = 1;
-    }
-
-    uint64_t *chunks = (uint64_t *)malloc(sizeof(uint32_t) * numChunks);
-
-    int start = 0;
-    int end = 8;
-
-    for (int i = 0; i < numChunks; i++) {
-      Converter converter;
-      chunks[i] = converter.stringToUint64(cText.substr(start, end));
-      start += 8;
-    }
-
-    return chunks;
   }
 };

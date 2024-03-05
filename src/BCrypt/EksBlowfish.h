@@ -10,13 +10,15 @@ private:
   int passwordLength;
   uint8_t *salt;
   uint8_t *password;
+  uint32_t *P;
+  uint32_t **S = new uint32_t *[4]();
 
-  uint32_t P[18] = {0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822,
-                    0x299f31d0, 0x082efa98, 0xec4e6c89, 0x452821e6, 0x38d01377,
-                    0xbe5466cf, 0x34e90c6c, 0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5,
-                    0xb5470917, 0x9216d5d9, 0x8979fb1b};
+  uint32_t initP[18] = {
+      0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822, 0x299f31d0,
+      0x082efa98, 0xec4e6c89, 0x452821e6, 0x38d01377, 0xbe5466cf, 0x34e90c6c,
+      0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917, 0x9216d5d9, 0x8979fb1b};
 
-  uint32_t S[4][256] = {
+  uint32_t initS[4][256] = {
       {0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7, 0xb8e1afed, 0x6a267e96,
        0xba7c9045, 0xf12c7f99, 0x24a19947, 0xb3916cf7, 0x0801f2e2, 0x858efc16,
        0x636920d8, 0x71574e69, 0xa458fea3, 0xf4933d7e, 0x0d95748f, 0x728eb658,
@@ -196,6 +198,20 @@ public:
     this->passwordLength = passwordLength;
     this->salt = salt;
     this->password = password;
+
+    uint32_t *P = &initP[0];
+
+    uint32_t *S0 = &initS[0][0];
+    uint32_t *S1 = &initS[1][0];
+    uint32_t *S2 = &initS[2][0];
+    uint32_t *S3 = &initS[3][0];
+
+    uint32_t **S = new uint32_t *[4]();
+
+    S[0] = S0;
+    S[1] = S1;
+    S[2] = S2;
+    S[3] = S3;
   }
 
   // private:]
@@ -222,9 +238,48 @@ public:
     return cycle;
   }
 
-  void expand_key() {
-    for (int n = 1; n <= 18; n++) {
-      P[n - 1] = P[n - 1] ^ cyclePassword(4 * (n - 1), (4 * n) - 1);
+  uint64_t *generate_salt_halves(uint8_t *salt) {
+    uint64_t *saltHalves = (uint64_t *)malloc(sizeof(uint64_t) * 2);
+
+    uint64_t saltLeft;
+    uint64_t saltRight;
+
+    for (int i = 0; i < 7; i++) {
+      saltLeft += salt[i];
+      saltLeft = saltLeft << 8;
     }
+
+    saltLeft += salt[7];
+
+    for (int i = 8; i < 14; i++) {
+      saltRight += salt[i];
+      saltRight = saltRight << 8;
+    }
+
+    saltRight += salt[15];
+
+    saltHalves[0] = saltLeft;
+    saltHalves[1] = saltRight;
+
+    return saltHalves;
+  }
+
+  void expand_key() {
+    uint64_t block = 0;
+
+    // xoring the P boxes with 32 bits of the password at a time. Password is
+    // cyclic
+    for (int n = 1; n <= 18; n++) {
+      P[n - 1] = P[n - 1] ^ cyclePassword(4 * (n - 1), (4 * n));
+    }
+
+    uint64_t *saltHalves = generate_salt_halves(salt);
+
+    for (int n = 1; n < 10; n++) {
+      block = block ^ salt[(n - 1) % 2];
+      Blowfish blowfish(P, S, block);
+    }
+
+    free(saltHalves);
   }
 };
