@@ -4,6 +4,24 @@
 #include <iostream>
 #include <ostream>
 
+void converter_test(){
+    Converter converter;
+
+    uint32_t num = 155;
+
+    uint64_t num64 = 255;
+
+    uint8_t *convert = converter.bits_to_bytes(num, 32);
+
+    num = converter.bytes_to_32bit(convert, 4);
+
+    uint8_t *convert64 = converter.bits_to_bytes(num64, 64);
+
+    num64 = converter.bytes_to_64bit(convert64, 8);
+
+    std::cout << "converter output: " << num << " " << num64 << std::endl;
+}
+
 void printCycle(uint32_t cycle) { std::cout << std::hex << cycle << std::endl; }
 
 /*void cycle_password_tests() {
@@ -238,7 +256,7 @@ void blowfish_tests() {
 
   uint8_t password[8] = {'R', 'e', 'd', 'B', 'l', 'o', 'c', 'k'};
 
-  Blowfish blowfish(P_pointer, S_pointer, password);
+  Blowfish blowfish(P_pointer, S_pointer, password, 8);
 
   uint8_t *cipher = blowfish.Encrypt();
 
@@ -265,13 +283,14 @@ void EksBlowfish_test() {
   uint32_t *P = eks.getP();
   uint32_t **S = eks.getS();
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 18; i++) {
     std::cout << std::hex << P[i] << std::endl;
   }
 }
 
-int main() {
+/*int main() {
   // cycle_password_tests();
   // blowfish_tests();
+  converter_test();
   EksBlowfish_test();
-}
+}*/

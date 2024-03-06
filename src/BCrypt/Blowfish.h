@@ -1,3 +1,4 @@
+#include "converter.h"
 #include <cassert>
 #include <cinttypes>
 #include <cmath>
@@ -6,6 +7,7 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <sys/types.h>
 
 // 2 classes that are used for blowfish encryption
 // one for the EksBlowfish part of the algorithm
@@ -15,87 +17,61 @@
 
 class Blowfish {
 private:
-  int numChunks;
+  int numBytes;
   uint32_t *P;
   uint32_t **S;
   uint8_t *cText;
 
 public:
-  Blowfish(uint32_t *P, uint32_t **S, uint8_t *cText) {
+  Blowfish(uint32_t *P, uint32_t **S, uint8_t *cText, int numBytes) {
     this->P = P;
     this->S = S;
     this->cText = cText;
+    this->numBytes = numBytes;
   }
 
   uint8_t *Encrypt() {
-    uint32_t *cText32Bit = convert_to_32bit(cText);
+    Converter converter;
+    int byteRemainder = numBytes % 4;
 
-    for (int i = 0; i < 16; i++) {
-      // doing the switch of the left and right halves with the mod of i
-      // pointers are used so that I don't have to waste instructions by putting
-      // the values back into the array
-      uint32_t *leftBytes = &cText32Bit[i % 2];
-      uint32_t *rightBytes = &cText32Bit[(i + 1) % 2];
+    numBytes = numBytes / 4;
+    uint8_t *nextText = cText;
+    uint32_t *cText32Bit = (uint32_t *)malloc(sizeof(uint32_t) * numBytes + 1);
 
-      *leftBytes = *leftBytes ^ P[i];
-      *leftBytes = f(*leftBytes);
+    for (int i = 0; i < numBytes; i++) {
+      cText32Bit[i] = converter.bytes_to_32bit(nextText, 4);
+      nextText = &nextText[4];
+    }
 
-      *rightBytes = *rightBytes ^ *leftBytes;
+    cText32Bit[numBytes + 1] = converter.bytes_to_32bit(cText, byteRemainder);
+
+    numBytes += byteRemainder;
+
+// Work this out
+    for (int n = 0; n < numBytes; n++) {
+        uint32_t *cipherRound = (uint32_t *)malloc(sizeof(uint32_t) * 2);
+
+        for (int i = 0; i < 16; i++) {
+            // doing the switch of the left and right halves with the mod of i
+            // pointers are used so that I don't have to waste instructions by putting
+            // the values back into the array
+            uint32_t *leftBytes = &cText32Bit[i % 2];
+            uint32_t *rightBytes = &cText32Bit[(i + 1) % 2];
+
+            *leftBytes = *leftBytes ^ P[i];
+            *leftBytes = f(*leftBytes);
+
+            *rightBytes = *rightBytes ^ *leftBytes;
+        }
     }
 
     cText32Bit[1] = cText32Bit[1] ^ P[17];
     cText32Bit[0] = cText32Bit[0] ^ P[16];
 
-    return convert_to_bytes(cText32Bit);
+    return converter.bits_to_bytes(append32bits(cText32Bit), 64);
   }
 
 private:
-  uint8_t *convert_to_bytes(uint32_t *bits) {
-    uint8_t divider = 0xff;
-    uint8_t *bytes = (uint8_t *)malloc(sizeof(uint8_t) * 8);
-    uint32_t leftBits = bits[0];
-    uint32_t rightBits = bits[1];
-
-    for (int i = 0; i < 4; i++) {
-      uint8_t test = divider & leftBits;
-      bytes[i] = divider & leftBits;
-      leftBits = leftBits >> 8;
-    }
-
-    for (int i = 4; i < 8; i++) {
-      uint8_t test2 = divider & rightBits;
-      bytes[i] = divider & rightBits;
-      rightBits = rightBits >> 8;
-    }
-
-    return bytes;
-  }
-
-  uint32_t *convert_to_32bit(uint8_t *bytes) {
-    uint32_t leftBytes = 0;
-    uint32_t rightBytes = 0;
-    uint32_t *output = (uint32_t *)malloc(sizeof(uint32_t) * 2);
-
-    for (int i = 0; i < 3; i++) {
-      leftBytes += bytes[i];
-      leftBytes = leftBytes << 8;
-    }
-
-    leftBytes += bytes[3];
-
-    for (int i = 4; i < 7; i++) {
-      rightBytes += bytes[i];
-      rightBytes = rightBytes << 8;
-    }
-
-    rightBytes += bytes[7];
-
-    output[0] = leftBytes;
-    output[1] = rightBytes;
-
-    return output;
-  }
-
   uint32_t f(uint32_t block) {
     uint8_t *quarters = getQuarters(block);
     uint32_t s1 = S[0][quarters[0]];
@@ -113,7 +89,7 @@ private:
     return s4;
   }
 
-  uint8_t *getQuarters(uint32_t block) {
+  static uint8_t *getQuarters(uint32_t block) {
     uint8_t *quarters = (uint8_t *)malloc(sizeof(uint8_t) * 4);
     uint8_t divider = 0xff;
 
@@ -123,5 +99,13 @@ private:
     }
 
     return quarters;
+  }
+
+  static uint64_t append32bits(uint32_t *bits){
+      uint64_t output = bits[0];
+      output = output << 32;
+      output += bits[1];
+
+      return output;
   }
 };

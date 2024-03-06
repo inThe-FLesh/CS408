@@ -1,5 +1,4 @@
 #include "Blowfish.h"
-#include "converter.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -341,12 +340,14 @@ private:
     uint64_t *saltHalves = generate_salt_halves(salt);
 
     for (int n = 1; n < 10; n++) {
-      // this mess of conversion is neccessary to ensure that the blowfish class
-      // is compatible with char arrays and byte arrays
+      // this mess of conversion is necessary to ensure that the blowfish class
+      // is compatible with later on in the algorithm. Saves writing 2 blowfish implementations
       uint64_t buffer = converter.bytes_to_64bit(block, 8) ^ salt[(n - 1) % 2];
       block = converter.bits_to_bytes(buffer, 64);
 
-      Blowfish blowfish(P, S, block);
+      Blowfish blowfish(P, S, block, 8);
+
+      block = blowfish.Encrypt();
 
       uint32_t *blockHalves =
           converter.split_64bit(converter.bytes_to_64bit(block, 8));
