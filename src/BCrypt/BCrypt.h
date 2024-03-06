@@ -5,4 +5,9 @@
 #include <cstdlib>
 #include <string>
 #include <sys/types.h>
-#include <tuple>
+#include <sys/time.h>
+#include <cstdint>
+#include <iomanip>
+
+using std::cout;
+using std::endl;

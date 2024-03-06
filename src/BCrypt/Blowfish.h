@@ -30,7 +30,7 @@ public:
     this->numBytes = numBytes;
   }
 
-  uint8_t *Encrypt() {
+  uint8_t **Encrypt() {
     Converter converter;
     int byteRemainder = numBytes % 4;
 
@@ -40,35 +40,50 @@ public:
 
     for (int i = 0; i < numBytes; i++) {
       cText32Bit[i] = converter.bytes_to_32bit(nextText, 4);
-      nextText = &nextText[4];
+      nextText = &nextText[3];
     }
 
-    cText32Bit[numBytes + 1] = converter.bytes_to_32bit(cText, byteRemainder);
-
-    numBytes += byteRemainder;
-
-// Work this out
-    for (int n = 0; n < numBytes; n++) {
-        uint32_t *cipherRound = (uint32_t *)malloc(sizeof(uint32_t) * 2);
-
-        for (int i = 0; i < 16; i++) {
-            // doing the switch of the left and right halves with the mod of i
-            // pointers are used so that I don't have to waste instructions by putting
-            // the values back into the array
-            uint32_t *leftBytes = &cText32Bit[i % 2];
-            uint32_t *rightBytes = &cText32Bit[(i + 1) % 2];
-
-            *leftBytes = *leftBytes ^ P[i];
-            *leftBytes = f(*leftBytes);
-
-            *rightBytes = *rightBytes ^ *leftBytes;
-        }
+    // this is used to pad the message if there aren't enough 32 bit pairs
+    if (numBytes % 2 != 0) {
+      cText32Bit[numBytes] = converter.bytes_to_32bit(nextText, byteRemainder);
+      cText32Bit[numBytes + 1] = 0;
+      numBytes += 1;
     }
 
-    cText32Bit[1] = cText32Bit[1] ^ P[17];
-    cText32Bit[0] = cText32Bit[0] ^ P[16];
+    uint8_t **blocks = (uint8_t **)malloc(sizeof(uint8_t *) * numBytes);
 
-    return converter.bits_to_bytes(append32bits(cText32Bit), 64);
+    // Work this out
+    assert(numBytes % 2 == 0);
+    for (int n = 0, j = 0; n < numBytes; n += 2, j++) {
+      uint8_t *block;
+      uint32_t *cipherRound = (uint32_t *)malloc(sizeof(uint32_t) * 2);
+      cipherRound[0] = cText32Bit[n];
+      cipherRound[1] = cText32Bit[n + 1];
+
+      for (int i = 0; i < 16; i++) {
+        // doing the switch of the left and right halves with the mod of i
+        // pointers are used so that I don't have to waste instructions by
+        // putting the values back into the array
+        uint32_t *leftBytes = &cipherRound[i % 2];
+        uint32_t *rightBytes = &cipherRound[(i + 1) % 2];
+
+        *leftBytes = *leftBytes ^ P[i];
+        *leftBytes = f(*leftBytes);
+
+        *rightBytes = *rightBytes ^ *leftBytes;
+      }
+
+      cipherRound[1] = cipherRound[1] ^ P[17];
+      cipherRound[0] = cipherRound[0] ^ P[16];
+
+      uint64_t cipherOut = append32bits(cipherRound);
+
+      block = converter.bits_to_bytes(cipherOut, 64);
+
+      blocks[j] = block;
+    }
+
+    return blocks;
   }
 
 private:
@@ -95,17 +110,17 @@ private:
 
     // starting i at one so I can use it to control the right shift amount
     for (int i = 1; i <= 4; i++) {
-      quarters[i] = divider & (block >> (32 - (8 * i)));
+      quarters[i - 1] = divider & (block >> (32 - (8 * i)));
     }
 
     return quarters;
   }
 
-  static uint64_t append32bits(uint32_t *bits){
-      uint64_t output = bits[0];
-      output = output << 32;
-      output += bits[1];
+  static uint64_t append32bits(uint32_t *bits) {
+    uint64_t output = bits[0];
+    output = output << 32;
+    output += bits[1];
 
-      return output;
+    return output;
   }
 };
