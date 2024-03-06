@@ -93,9 +93,6 @@
 		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/Blowfish.h">
 			<Option target="BCrypt"/>
 		</Unit>
-		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/EksBlowfish.cpp">
-			<Option target="BCrypt"/>
-		</Unit>
 		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/EksBlowfish.h">
 			<Option target="BCrypt"/>
 		</Unit>
@@ -103,6 +100,12 @@
 			<Option target="BCrypt"/>
 		</Unit>
 		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/base64.h">
+			<Option target="BCrypt"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/converter.h">
+			<Option target="BCrypt"/>
+		</Unit>
+		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/test.cpp">
 			<Option target="BCrypt"/>
 		</Unit>
 		<Unit filename="/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/CMakeLists.txt">

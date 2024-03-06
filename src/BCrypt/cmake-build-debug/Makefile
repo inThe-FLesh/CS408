@@ -153,30 +153,6 @@ BCrypt.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/BCrypt.cpp.s
 .PHONY : BCrypt.cpp.s
 
-EksBlowfish.o: EksBlowfish.cpp.o
-.PHONY : EksBlowfish.o
-
-# target to build an object file
-EksBlowfish.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o
-.PHONY : EksBlowfish.cpp.o
-
-EksBlowfish.i: EksBlowfish.cpp.i
-.PHONY : EksBlowfish.i
-
-# target to preprocess a source file
-EksBlowfish.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/EksBlowfish.cpp.i
-.PHONY : EksBlowfish.cpp.i
-
-EksBlowfish.s: EksBlowfish.cpp.s
-.PHONY : EksBlowfish.s
-
-# target to generate assembly for a file
-EksBlowfish.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/EksBlowfish.cpp.s
-.PHONY : EksBlowfish.cpp.s
-
 base64.o: base64.cpp.o
 .PHONY : base64.o
 
@@ -201,6 +177,30 @@ base64.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/base64.cpp.s
 .PHONY : base64.cpp.s
 
+test.o: test.cpp.o
+.PHONY : test.o
+
+# target to build an object file
+test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/test.cpp.o
+.PHONY : test.cpp.o
+
+test.i: test.cpp.i
+.PHONY : test.i
+
+# target to preprocess a source file
+test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/test.cpp.i
+.PHONY : test.cpp.i
+
+test.s: test.cpp.s
+.PHONY : test.s
+
+# target to generate assembly for a file
+test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BCrypt.dir/build.make CMakeFiles/BCrypt.dir/test.cpp.s
+.PHONY : test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -213,12 +213,12 @@ help:
 	@echo "... BCrypt.o"
 	@echo "... BCrypt.i"
 	@echo "... BCrypt.s"
-	@echo "... EksBlowfish.o"
-	@echo "... EksBlowfish.i"
-	@echo "... EksBlowfish.s"
 	@echo "... base64.o"
 	@echo "... base64.i"
 	@echo "... base64.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

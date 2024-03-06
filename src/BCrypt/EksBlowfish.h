@@ -1,24 +1,30 @@
 #include "Blowfish.h"
+#include "converter.h"
+#include <algorithm>
+#include <cassert>
+#include <cmath>
 #include <cstdint>
 #include <cstdlib>
 #include <string>
-#include <tuple>
 
 class EksBlowfish {
 private:
   int cost;
   int passwordLength;
+  int passwordLengthStorage;
   uint8_t *salt;
   uint8_t *password;
-  uint32_t *P;
+  uint8_t *saltStorage = new uint8_t[16]();
+  uint8_t *passwordStorage;
+  uint8_t *zeroSalt = new uint8_t[16]();
   uint32_t **S = new uint32_t *[4]();
 
-  uint32_t initP[18] = {
+  uint32_t P[18] = {
       0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822, 0x299f31d0,
       0x082efa98, 0xec4e6c89, 0x452821e6, 0x38d01377, 0xbe5466cf, 0x34e90c6c,
       0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917, 0x9216d5d9, 0x8979fb1b};
 
-  uint32_t initS[4][256] = {
+  const uint32_t initS[4][256] = {
       {0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7, 0xb8e1afed, 0x6a267e96,
        0xba7c9045, 0xf12c7f99, 0x24a19947, 0xb3916cf7, 0x0801f2e2, 0x858efc16,
        0x636920d8, 0x71574e69, 0xa458fea3, 0xf4933d7e, 0x0d95748f, 0x728eb658,
@@ -199,40 +205,97 @@ public:
     this->salt = salt;
     this->password = password;
 
-    uint32_t *P = &initP[0];
+    uint32_t *S0 = new uint32_t[256]();
 
-    uint32_t *S0 = &initS[0][0];
-    uint32_t *S1 = &initS[1][0];
-    uint32_t *S2 = &initS[2][0];
-    uint32_t *S3 = &initS[3][0];
+    for (int i = 0; i < 256; i++) {
+      S0[i] = initS[0][i];
+    }
 
-    uint32_t **S = new uint32_t *[4]();
+    uint32_t *S1 = new uint32_t[256]();
+
+    for (int i = 0; i < 256; i++) {
+      S1[i] = initS[0][i];
+    }
+
+    uint32_t *S2 = new uint32_t[256]();
+
+    for (int i = 0; i < 256; i++) {
+      S2[i] = initS[0][i];
+    }
+
+    uint32_t *S3 = new uint32_t[256]();
+
+    for (int i = 0; i < 256; i++) {
+        S3[i] = initS[0][i];
+    }
 
     S[0] = S0;
     S[1] = S1;
     S[2] = S2;
     S[3] = S3;
+
+    passwordStorage = new uint8_t[passwordLength]();
+
+    for (int i = 0; i < 16; i++) {
+      saltStorage[i] = salt[i];
+    }
+
+    passwordStorage = new uint8_t[passwordLength]();
+
+    for (int i = 0; i < passwordLength; i++) {
+      passwordStorage[i] = password[i];
+    }
+
+    passwordLengthStorage = passwordLength;
   }
 
-  // private:]
-public:
-  uint32_t cyclePassword(int start, int end) {
+  void generate_keys() {
+    expand_key();
+
+    salt = zeroSalt;
+
+    for (int i = 0; i < pow(2, cost); i++) {
+      expand_key();
+
+      for (int i = 0; i < 16; i++) {
+        password[i] = saltStorage[i];
+      }
+
+      passwordLength = 16;
+
+      expand_key();
+
+      passwordLength = passwordLengthStorage;
+
+      for (int i = 0; i < passwordLength; i++) {
+        password[i] = passwordStorage[i];
+      }
+    }
+  }
+
+  ~EksBlowfish() {
+    delete[] saltStorage;
+    delete[] passwordStorage;
+    delete[] zeroSalt;
+  }
+
+  uint32_t *getP() { return P; }
+
+  uint32_t **getS() { return S; }
+
+private:
+  uint32_t cyclePassword(int position) {
+    int count = 0;
     uint32_t cycle = 0;
 
-    while (start < end) {
-      if (start == passwordLength) {
-        end = end - passwordLength;
-        start = 0;
-      }
-
-      assert(start <= passwordLength);
-
-      cycle += password[start];
-
-      if (start != end - 1) {
+    while (count < 4) {
+      cycle += password[position];
+      if (count < 3) {
         cycle = cycle << 8;
       }
-      start++;
+
+      count++;
+      position++;
     }
 
     return cycle;
@@ -246,6 +309,7 @@ public:
 
     for (int i = 0; i < 7; i++) {
       saltLeft += salt[i];
+      uint32_t **S = new uint32_t *[4]();
       saltLeft = saltLeft << 8;
     }
 
@@ -265,19 +329,46 @@ public:
   }
 
   void expand_key() {
-    uint64_t block = 0;
+    uint8_t *block = new uint8_t[8]();
+    Converter converter;
 
     // xoring the P boxes with 32 bits of the password at a time. Password is
     // cyclic
     for (int n = 1; n <= 18; n++) {
-      P[n - 1] = P[n - 1] ^ cyclePassword(4 * (n - 1), (4 * n));
+      P[n - 1] = P[n - 1] ^ cyclePassword(4 * (n - 1) % passwordLength);
     }
 
     uint64_t *saltHalves = generate_salt_halves(salt);
 
     for (int n = 1; n < 10; n++) {
-      block = block ^ salt[(n - 1) % 2];
+      // this mess of conversion is neccessary to ensure that the blowfish class
+      // is compatible with char arrays and byte arrays
+      uint64_t buffer = converter.bytes_to_64bit(block, 8) ^ salt[(n - 1) % 2];
+      block = converter.bits_to_bytes(buffer, 64);
+
       Blowfish blowfish(P, S, block);
+
+      uint32_t *blockHalves =
+          converter.split_64bit(converter.bytes_to_64bit(block, 8));
+      P[2 * n] = blockHalves[0];
+      P[2 * (n + 1)] = blockHalves[1];
+
+      free(blockHalves);
+    }
+
+    for (int i = 1; i < 5; i++) {
+      for (int n = 0; n < 128; n++) {
+        uint64_t buffer =
+            converter.bytes_to_64bit(block, 8) ^ salt[(n - 1) % 2];
+        block = converter.bits_to_bytes(buffer, 64);
+
+        uint32_t *blockHalves =
+            converter.split_64bit(converter.bytes_to_64bit(block, 8));
+        S[i - 1][2 * n] = blockHalves[0];
+        S[i - 1][2 * (n + 1)] = blockHalves[1];
+
+        free(blockHalves);
+      }
     }
 
     free(saltHalves);

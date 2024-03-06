@@ -9,8 +9,9 @@ add_executable(BCrypt
         BCrypt.cpp
         BCrypt.h
         Blowfish.h
-        EksBlowfish.cpp
         EksBlowfish.h
         base64.cpp
         base64.h
+        converter.h
+        test.cpp
 )

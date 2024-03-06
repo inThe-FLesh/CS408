@@ -6,7 +6,7 @@
 
 void printCycle(uint32_t cycle) { std::cout << std::hex << cycle << std::endl; }
 
-void cycle_password_tests() {
+/*void cycle_password_tests() {
   uint8_t salt[16] = {};
   uint8_t password[4] = {'R', 'e', 'd', 'B'};
   EksBlowfish eks(0, 4, salt, password);
@@ -39,7 +39,7 @@ void cycle_password_tests() {
 
   assert(output == 0x42526564);
   std::cout << "Test 4 passed." << std::endl;
-}
+}*/
 
 void blowfish_tests() {
 
@@ -251,7 +251,27 @@ void blowfish_tests() {
   std::cout << std::endl;
 }
 
+void EksBlowfish_test() {
+  int cost = 3;
+  int passwordLength = 12;
+  uint8_t salt[16] = {0xF7, 0x8E, 0x2D, 0x6B, 0xC3, 0x9A, 0x1F, 0x5D,
+                      0xA9, 0x0E, 0x73, 0xB8, 0x64, 0xEC, 0x21};
+  uint8_t password[12] = {'R', 'e', 'd', 'B', 'l', 'o',
+                          'c', 'k', 'B', 'l', 'u', 'e'};
+  EksBlowfish eks(cost, passwordLength, salt, password);
+
+  eks.generate_keys();
+
+  uint32_t *P = eks.getP();
+  uint32_t **S = eks.getS();
+
+  for (int i = 0; i < 5; i++) {
+    std::cout << std::hex << P[i] << std::endl;
+  }
+}
+
 int main() {
-  cycle_password_tests();
-  blowfish_tests();
+  // cycle_password_tests();
+  // blowfish_tests();
+  EksBlowfish_test();
 }

@@ -79,22 +79,9 @@ CMakeFiles/BCrypt.dir/BCrypt.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BCrypt.dir/BCrypt.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/BCrypt.cpp -o CMakeFiles/BCrypt.dir/BCrypt.cpp.s
 
-CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o: CMakeFiles/BCrypt.dir/flags.make
-CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o: /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/EksBlowfish.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o -c /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/EksBlowfish.cpp
-
-CMakeFiles/BCrypt.dir/EksBlowfish.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/BCrypt.dir/EksBlowfish.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/EksBlowfish.cpp > CMakeFiles/BCrypt.dir/EksBlowfish.cpp.i
-
-CMakeFiles/BCrypt.dir/EksBlowfish.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BCrypt.dir/EksBlowfish.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/EksBlowfish.cpp -o CMakeFiles/BCrypt.dir/EksBlowfish.cpp.s
-
 CMakeFiles/BCrypt.dir/base64.cpp.o: CMakeFiles/BCrypt.dir/flags.make
 CMakeFiles/BCrypt.dir/base64.cpp.o: /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/base64.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/BCrypt.dir/base64.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/BCrypt.dir/base64.cpp.o"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/BCrypt.dir/base64.cpp.o -c /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/base64.cpp
 
 CMakeFiles/BCrypt.dir/base64.cpp.i: cmake_force
@@ -105,18 +92,31 @@ CMakeFiles/BCrypt.dir/base64.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BCrypt.dir/base64.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/base64.cpp -o CMakeFiles/BCrypt.dir/base64.cpp.s
 
+CMakeFiles/BCrypt.dir/test.cpp.o: CMakeFiles/BCrypt.dir/flags.make
+CMakeFiles/BCrypt.dir/test.cpp.o: /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/test.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/BCrypt.dir/test.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/BCrypt.dir/test.cpp.o -c /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/test.cpp
+
+CMakeFiles/BCrypt.dir/test.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/BCrypt.dir/test.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/test.cpp > CMakeFiles/BCrypt.dir/test.cpp.i
+
+CMakeFiles/BCrypt.dir/test.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/BCrypt.dir/test.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ross/Documents/Year4/CS408/CS408/src/BCrypt/test.cpp -o CMakeFiles/BCrypt.dir/test.cpp.s
+
 # Object files for target BCrypt
 BCrypt_OBJECTS = \
 "CMakeFiles/BCrypt.dir/BCrypt.cpp.o" \
-"CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o" \
-"CMakeFiles/BCrypt.dir/base64.cpp.o"
+"CMakeFiles/BCrypt.dir/base64.cpp.o" \
+"CMakeFiles/BCrypt.dir/test.cpp.o"
 
 # External object files for target BCrypt
 BCrypt_EXTERNAL_OBJECTS =
 
 BCrypt: CMakeFiles/BCrypt.dir/BCrypt.cpp.o
-BCrypt: CMakeFiles/BCrypt.dir/EksBlowfish.cpp.o
 BCrypt: CMakeFiles/BCrypt.dir/base64.cpp.o
+BCrypt: CMakeFiles/BCrypt.dir/test.cpp.o
 BCrypt: CMakeFiles/BCrypt.dir/build.make
 BCrypt: CMakeFiles/BCrypt.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable BCrypt"
