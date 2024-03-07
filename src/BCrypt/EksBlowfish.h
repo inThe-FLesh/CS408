@@ -204,6 +204,8 @@ public:
     this->salt = salt;
     this->password = password;
 
+    // initialising the S and P boxes
+
     uint32_t *S0 = new uint32_t[256]();
 
     for (int i = 0; i < 256; i++) {
@@ -233,6 +235,9 @@ public:
     S[2] = S2;
     S[3] = S3;
 
+    // creating backups of the password and salt values that will be needed
+    // later
+
     passwordStorage = new uint8_t[passwordLength]();
 
     for (int i = 0; i < 16; i++) {
@@ -254,6 +259,13 @@ public:
     salt = zeroSalt;
 
     for (int i = 0; i < pow(2, cost); i++) {
+
+      for (int i = 0; i < passwordLength; i++) {
+        password[i] = passwordStorage[i];
+      }
+
+      passwordLength = passwordLengthStorage;
+
       expand_key();
 
       for (int i = 0; i < 16; i++) {
@@ -263,12 +275,6 @@ public:
       passwordLength = 16;
 
       expand_key();
-
-      passwordLength = passwordLengthStorage;
-
-      for (int i = 0; i < passwordLength; i++) {
-        password[i] = passwordStorage[i];
-      }
     }
   }
 
@@ -303,8 +309,8 @@ private:
   uint64_t *generate_salt_halves(uint8_t *salt) {
     uint64_t *saltHalves = (uint64_t *)malloc(sizeof(uint64_t) * 2);
 
-    uint64_t saltLeft;
-    uint64_t saltRight;
+    uint64_t saltLeft = 0;
+    uint64_t saltRight = 0;
 
     for (int i = 0; i < 7; i++) {
       saltLeft += salt[i];
@@ -314,7 +320,7 @@ private:
 
     saltLeft += salt[7];
 
-    for (int i = 8; i < 14; i++) {
+    for (int i = 8; i < 15; i++) {
       saltRight += salt[i];
       saltRight = saltRight << 8;
     }
@@ -337,13 +343,16 @@ private:
       P[n - 1] = P[n - 1] ^ cyclePassword(4 * (n - 1) % passwordLength);
     }
 
+    // splitting the salt into two 64 bit halves as we need to xor each half
+    // with the block in later steps
+
     uint64_t *saltHalves = generate_salt_halves(salt);
 
     for (int n = 1; n < 10; n++) {
       // this mess of conversion is necessary to ensure that the blowfish class
       // is compatible with later on in the algorithm. Saves writing 2 blowfish
       // implementations
-      uint64_t buffer = converter.bytes_to_64bit(block, 8) ^ salt[(n - 1) % 2];
+      uint64_t buffer = converter.bytes_to_64bit(block, 0) ^ saltHalves[(n - 1) % 2];
       block = converter.bits_to_bytes(buffer, 64);
 
       Blowfish blowfish(P, S, block, 8);
@@ -353,8 +362,8 @@ private:
 
       uint32_t *blockHalves =
           converter.split_64bit(converter.bytes_to_64bit(block, 8));
-      P[2 * n] = blockHalves[0];
-      P[2 * (n + 1)] = blockHalves[1];
+      P[2 * (n - 1)] = blockHalves[0];
+      P[2 * n] = blockHalves[1];
 
       free(blockHalves);
     }

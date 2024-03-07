@@ -4,26 +4,22 @@
 #include <iostream>
 #include <ostream>
 
-void converter_test() {
-  Converter converter;
+void converter_test(){
+    Converter converter;
 
-  uint32_t num = 155;
+    uint32_t num = 155;
 
-  uint64_t num64 = 255;
+    uint64_t num64 = 255;
 
-  uint8_t *convert = converter.bits_to_bytes(num, 32);
+    uint8_t *convert = converter.bits_to_bytes(num, 32);
 
-  num = converter.bytes_to_32bit(convert, 4);
+    num = converter.bytes_to_32bit(convert, 4);
 
-  uint8_t *convert64 = converter.bits_to_bytes(num64, 64);
+    uint8_t *convert64 = converter.bits_to_bytes(num64, 64);
 
-  num64 = converter.bytes_to_64bit(convert64, 8);
+    num64 = converter.bytes_to_64bit(convert64, 8);
 
-  uint32_t *split64 = converter.split_64bit(num64);
-
-  std::cout << "split: " << split64[0] << split64[1] << std::endl;
-
-  std::cout << "converter output: " << num << " " << num64 << std::endl;
+    std::cout << "converter output: " << num << " " << num64 << std::endl;
 }
 
 void printCycle(uint32_t cycle) { std::cout << std::hex << cycle << std::endl; }
@@ -296,4 +292,5 @@ void EksBlowfish_test() {
   // cycle_password_tests();
   // blowfish_tests();
   converter_test();
+  EksBlowfish_test();
 }*/
