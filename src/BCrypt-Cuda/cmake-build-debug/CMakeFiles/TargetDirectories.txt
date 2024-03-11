@@ -1,3 +1,0 @@
-/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles/BCrypt.dir
-/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -40,7 +40,7 @@ public:
 
     for (int i = 0; i < numBytes; i++) {
       cText32Bit[i] = converter.bytes_to_32bit(nextText, 4);
-      nextText = &nextText[3];
+      nextText = &nextText[4];
     }
 
     // this is used to pad the message if there aren't enough 32 bit pairs
@@ -56,7 +56,7 @@ public:
     assert(numBytes % 2 == 0);
     for (int n = 0, j = 0; n < numBytes; n += 2, j++) {
       uint8_t *block;
-      uint32_t *cipherRound = (uint32_t *)malloc(sizeof(uint32_t) * 2);
+      uint32_t *cipherRound = (uint32_t *)malloc(sizeof(uint32_t) * 3);
       cipherRound[0] = cText32Bit[n];
       cipherRound[1] = cText32Bit[n + 1];
 
@@ -64,13 +64,17 @@ public:
         // doing the switch of the left and right halves with the mod of i
         // pointers are used so that I don't have to waste instructions by
         // putting the values back into the array
-        uint32_t *leftBytes = &cipherRound[i % 2];
-        uint32_t *rightBytes = &cipherRound[(i + 1) % 2];
+          uint32_t *leftBytes = &cipherRound[0];
+          uint32_t *rightBytes = &cipherRound[1];
 
         *leftBytes = *leftBytes ^ P[i];
         *leftBytes = f(*leftBytes);
 
         *rightBytes = *rightBytes ^ *leftBytes;
+
+        cipherRound[2] = cipherRound[0];
+        cipherRound[0] = cipherRound[1];
+        cipherRound[1] = cipherRound[2];
       }
 
       cipherRound[1] = cipherRound[1] ^ P[17];
@@ -108,7 +112,7 @@ private:
     uint8_t *quarters = (uint8_t *)malloc(sizeof(uint8_t) * 4);
     uint8_t divider = 0xff;
 
-    // starting i at one so I can use it to control the right shift amount
+    // starting i at one, so I can use it to control the right shift amount
     for (int i = 1; i <= 4; i++) {
       quarters[i - 1] = divider & (block >> (32 - (8 * i)));
     }

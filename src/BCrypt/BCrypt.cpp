@@ -14,6 +14,8 @@ std::string concatenateHash(int cost, uint8_t *salt, uint64_t *ciphers) {
     cipherString += str;
   }
 
+  cipherString = cipherString.substr(0, 23);
+
   saltString = base64_encode(saltString);
   cipherString = base64_encode(cipherString);
 
@@ -50,6 +52,7 @@ int BCrypt(int cost, uint8_t *salt, uint8_t *password, int passwordLength) {
 
   eks.generate_keys();
 
+  // expensive key setup
   P = eks.getP();
   S = eks.getS();
 
@@ -75,7 +78,7 @@ int BCrypt(int cost, uint8_t *salt, uint8_t *password, int passwordLength) {
 }
 
 int main() {
-  int cost = 4;
+  int cost = 12;
   int passwordLength = 9;
   uint8_t salt[16] = {0x47, 0xD8, 0x7F, 0x70, 0x83, 0xF3, 0xD2, 0x08,
                       0xBE, 0x51, 0x13, 0x4D, 0x5F, 0x79, 0x21, 0xD8};

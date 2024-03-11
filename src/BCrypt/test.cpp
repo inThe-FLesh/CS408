@@ -4,6 +4,20 @@
 #include <iostream>
 #include <ostream>
 
+/*void fill_with_pi_test() {
+  uint8_t salt[16] = {};
+  uint8_t password[4] = {'R', 'e', 'd', 'B'};
+  EksBlowfish eks(0, 4, salt, password);
+
+  uint32_t *S = (uint32_t *)malloc(sizeof(uint32_t) * 18);
+
+  for (int i = 0; i < 18; i++) {
+    S[i] = 0;
+  }
+
+  uint32_t *piArray = eks.fill_with_pi(S, 18);
+}*/
+
 void converter_test() {
   Converter converter;
 
@@ -295,5 +309,6 @@ void EksBlowfish_test() {
 /*int main() {
   // cycle_password_tests();
   // blowfish_tests();
-  converter_test();
+  // converter_test();
+  fill_with_pi_test();
 }*/
