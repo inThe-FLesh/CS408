@@ -45,8 +45,8 @@ public:
 
     P = fill_with_pi(18);
 
-    for (int i = 0; i < 4; i++){
-        S[i] = fill_with_pi(256);
+    for (int i = 0; i < 4; i++) {
+      S[i] = fill_with_pi(256);
     }
   }
 
@@ -57,16 +57,16 @@ public:
 
     for (int i = 0; i < pow(2, cost); i++) {
 
-      for (int i = 0; i < passwordLength; i++) {
-        password[i] = passwordStorage[i];
+      for (int j = 0; j < passwordLength; j++) {
+        password[j] = passwordStorage[j];
       }
 
       passwordLength = passwordLengthStorage;
 
       expand_key();
 
-      for (int i = 0; i < 16; i++) {
-        password[i] = saltStorage[i];
+      for (int j = 0; j < 16; j++) {
+        password[j] = saltStorage[j];
       }
 
       passwordLength = 16;
@@ -75,20 +75,20 @@ public:
     }
   }
 
-    static uint32_t *fill_with_pi(int length) {
-        uint32_t *piArray = (uint32_t *)malloc(sizeof(uint32_t) * length);
-        double pi = M_PI;
-        // removing the 3 to get the fractional part of pi
+  static uint32_t *fill_with_pi(int length) {
+    uint32_t *piArray = (uint32_t *)malloc(sizeof(uint32_t) * length);
+    double pi = M_PI;
+    // removing the 3 to get the fractional part of pi
 
-        pi -= 3;
-        uint32_t pi32 = static_cast<uint32_t>(pi * pow(2, 32));
+    pi -= 3;
+    uint32_t pi32 = static_cast<uint32_t>(pi * pow(2, 32));
 
-        for (int i = 0; i < length; i++) {
-            piArray[i] = pi32;
-        }
-
-        return piArray;
+    for (int i = 0; i < length; i++) {
+      piArray[i] = pi32;
     }
+
+    return piArray;
+  }
 
   ~EksBlowfish() {
     delete[] saltStorage;

@@ -1,4 +1,4 @@
-# Install script for directory: /home/ross/Documents/Year4/CS408/CS408/src/BCrypt
+# Install script for directory: /home/ross/Documents/Year4/CS408/CS408/src/BCrypt-Cuda
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ross/Documents/Year4/CS408/CS408/src/BCrypt/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ross/Documents/Year4/CS408/CS408/src/BCrypt-Cuda/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -63,16 +63,16 @@ public:
 
     for (int i = 0; i < pow(2, cost); i++) {
 
-      for (int i = 0; i < passwordLength; i++) {
-        password[i] = passwordStorage[i];
+      for (int j = 0; j < passwordLength; j++) {
+        password[j] = passwordStorage[j];
       }
 
       passwordLength = passwordLengthStorage;
 
       expand_key();
 
-      for (int i = 0; i < 16; i++) {
-        password[i] = saltStorage[i];
+      for (int j = 0; j < 16; j++) {
+        password[j] = saltStorage[j];
       }
 
       passwordLength = 16;

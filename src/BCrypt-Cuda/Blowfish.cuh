@@ -62,9 +62,9 @@ __global__ void kernel(uint32_t *P, uint32_t *S0, uint32_t *S1, uint32_t *S2,
 
   uint32_t *cipherRound = (uint32_t *)malloc(sizeof(uint32_t) * 3);
 
-  int tid = threadIdx.x + blockIdx.x * blockDim.x;
+  int tid = threadIdx.x;
 
-  if (tid < chunks && tid % 2 == 0) {
+  if (tid <= chunks && tid % 2 == 0) {
     cipherRound[0] = cText32Bit[tid];
     cipherRound[1] = cText32Bit[tid++];
 
@@ -147,7 +147,7 @@ public:
 
     size_t pBoxSize = sizeof(uint32_t) * 18;
     size_t sBoxSize = sizeof(uint32_t) * 256;
-    size_t cipherOutSize = sizeof(uint64_t) * chunks;
+    size_t cipherOutSize = sizeof(uint64_t) * chunks / 2;
 
     cudaMalloc(&dP, pBoxSize);
     cudaMalloc(&dS0, sBoxSize);
@@ -178,7 +178,7 @@ public:
       std::cerr << "Cuda Error: " << error << std::endl;
     }
 
-    for (int i = 0; i < cipherOutSize; i++) {
+    for (int i = 0; i < chunks / 2; i++) {
       blocks[i] = converter.bits_to_bytes(cipherOut[i], 64);
     }
 
