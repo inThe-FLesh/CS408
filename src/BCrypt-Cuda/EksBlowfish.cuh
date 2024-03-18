@@ -50,6 +50,12 @@ public:
     }
   }
 
+  ~EksBlowfish() {
+    delete[] saltStorage;
+    delete[] passwordStorage;
+    delete[] zeroSalt;
+  }
+
   void generate_keys() {
     expand_key();
 
@@ -88,12 +94,6 @@ public:
     }
 
     return piArray;
-  }
-
-  ~EksBlowfish() {
-    delete[] saltStorage;
-    delete[] passwordStorage;
-    delete[] zeroSalt;
   }
 
   uint32_t *getP() { return P; }

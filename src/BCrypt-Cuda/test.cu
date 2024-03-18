@@ -1,4 +1,4 @@
-#include "EksBlowfish.h"
+#include "EksBlowfish.cuh"
 #include <cstdint>
 #include <ios>
 #include <iostream>
@@ -18,7 +18,7 @@
   uint32_t *piArray = eks.fill_with_pi(S, 18);
 }*/
 
-void converter_test() {
+/*void converter_test() {
   Converter converter;
 
   uint32_t num = 155;
@@ -38,7 +38,7 @@ void converter_test() {
   std::cout << "split: " << split64[0] << split64[1] << std::endl;
 
   std::cout << "converter output: " << num << " " << num64 << std::endl;
-}
+}*/
 
 void printCycle(uint32_t cycle) { std::cout << std::hex << cycle << std::endl; }
 
@@ -306,9 +306,9 @@ void EksBlowfish_test() {
   }
 }*/
 
-/*int main() {
+int main() {
   // cycle_password_tests();
   // blowfish_tests();
   // converter_test();
-  fill_with_pi_test();
-}*/
+  // fill_with_pi_test();
+}
