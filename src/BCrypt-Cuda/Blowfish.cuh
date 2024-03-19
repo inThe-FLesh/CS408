@@ -36,8 +36,6 @@ __device__ uint32_t f(uint32_t block, uint32_t *S0, uint32_t *S1, uint32_t *S2,
   uint32_t s2Val = S2[quarters[2]];
   uint32_t s3Val = S3[quarters[3]];
 
-  size_t subSize = (sizeof(uint32_t) * 4);
-
   free(quarters);
 
   // addition mod 2^32
@@ -105,9 +103,6 @@ public:
     this->S = S;
     this->cText = cText;
     this->numBytes = numBytes;
-
-    size_t pBoxSize = sizeof(uint32_t) * 18;
-    size_t sBoxSize = sizeof(uint32_t) * 256;
   }
 
   ~Blowfish() {}
@@ -129,8 +124,6 @@ private:
     uint32_t s2 = S[1][quarters[1]];
     uint32_t s3 = S[2][quarters[2]];
     uint32_t s4 = S[3][quarters[3]];
-
-    size_t subSize = (sizeof(uint32_t) * 4);
 
     free(quarters);
 

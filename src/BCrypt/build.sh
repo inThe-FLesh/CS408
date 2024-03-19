@@ -1,2 +1,2 @@
-g++ base64.cpp BCrypt.cpp EksBlowfish.cpp -o BCrypt
+g++ base64.cpp BCrypt.cpp -o bin/BCrypt
 ./BCrypt

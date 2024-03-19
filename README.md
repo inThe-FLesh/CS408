@@ -1,2 +1,4 @@
-# CS408
-Most Up-to-date code will be found on the Dev Branch!
+# Determining the Suitability of Hashing Algorithms for Password Security Using GPU Acceleration. 
+
+<h1> Running and compiling code </h1>
+
