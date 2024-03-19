@@ -67,7 +67,7 @@ this can be done by running `bash build.sh` in the terminal when in the implemen
 to be able to compile cuda code you must have the cuda drivers installed, your GPUs driver, the cuda development toolkit, and / or nvcc. 
 compiling without specifying your architecture can cause issues with code executing on the GPU. 
 
-to specify architecture you would compile using 
+to specify architecture you would open a bash terminal in the folder of the algorithm you wish to compile and run this command:
 
 ```nvcc -gencode arch=compute_<YOUR ARCHITECTURE NUMBER>,code=sm_<YOUR ARCHITECTURE NUMBER> -rdc=true base64.cu BCrypt.cu -o BCrypt```
 
