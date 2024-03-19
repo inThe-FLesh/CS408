@@ -15,7 +15,7 @@ for that specific implementation. </p>
 a NVIDIA GPU to run. The cuda code was developed using a NVIDIA Geforce GTX 2060 super. Any GPU with the same architecture (Turing) should be able to run the compiled binaries without issue.  <br><br>
 
 <h3> Turing GPUs </h3>
-    -GeForce MX series
+   <p> -GeForce MX series
         -GeForce MX450 Laptop
         -GeForce MX550 Laptop
     -GeForce 16 series    GeForce MX series
@@ -65,4 +65,4 @@ a NVIDIA GPU to run. The cuda code was developed using a NVIDIA Geforce GTX 2060
         -T1000 8GB
         -T1200 Laptop
     -Nvidia Tesla
-        -Tesla T4
+        -Tesla T4</p>
