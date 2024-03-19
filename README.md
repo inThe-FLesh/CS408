@@ -68,6 +68,8 @@ to be able to compile cuda code you must have the cuda drivers installed, your G
 compiling without specifying your architecture can cause issues with code executing on the GPU. 
 
 to specify architecture you would compile using 
+
 ```nvcc -gencode arch=compute_<YOUR ARCHITECTURE NUMBER>,code=sm_<YOUR ARCHITECTURE NUMBER> -rdc=true base64.cu BCrypt.cu -o BCrypt```
+
 this example uses the BCrypt cuda project as its compile target
 
