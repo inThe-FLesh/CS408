@@ -55,6 +55,8 @@ public:
 
     salt = zeroSalt;
 
+    // this is the expensive part of the algorithm
+    // that improves its resistance to GPU acceleration
     for (int i = 0; i < pow(2, cost); i++) {
 
       for (int j = 0; j < passwordLength; j++) {
@@ -75,6 +77,7 @@ public:
     }
   }
 
+  // the P and S boxes are initialised with the fractional part of pi
   static uint32_t *fill_with_pi(int length) {
     uint32_t *piArray = (uint32_t *)malloc(sizeof(uint32_t) * length);
     double pi = M_PI;
@@ -101,6 +104,8 @@ public:
   uint32_t **getS() { return S; }
 
 private:
+  // this is used to get 32 bits of password at a time
+  // it is treated cylically
   uint32_t cyclePassword(int position) {
     int count = 0;
     uint32_t cycle = 0;
@@ -122,6 +127,8 @@ private:
     return cycle;
   }
 
+  // splits the 128 bit salt into two 64 bit numbers for use in the blowfish
+  // algorithm
   uint64_t *generate_salt_halves(uint8_t *salt) {
     uint64_t *saltHalves = (uint64_t *)malloc(sizeof(uint64_t) * 2);
 
@@ -149,6 +156,8 @@ private:
     return saltHalves;
   }
 
+  // this is the important hashin part that generates the new P and S values
+  // from the passwords
   void expand_key() {
     uint8_t *block = new uint8_t[8]();
     Converter converter;

@@ -43,6 +43,8 @@ int BCrypt(int cost, uint8_t *salt, uint8_t *password, int passwordLength) {
 
   memcpy(saltBackup, salt, sizeof(uint8_t) * 16);
 
+  // this text is used as the final cipher text as part of the bcrypt standard
+  // there is an easter egg hidden here "Open BSD"
   uint8_t cipherText[24] = {'O', 'r', 'p', 'h', 'e', 'a', 'n', 'B',
                             'e', 'h', 'o', 'l', 'd', 'e', 'r', 'S',
                             'c', 'r', 'y', 'D', 'o', 'u', 'b', 't'};
