@@ -1,13 +1,14 @@
 # Determining the Suitability of Hashing Algorithms for Password Security Using GPU Acceleration 
 Ross Gray CS408 
 
-**Disclaimer: I did not write the code to encode the bcrypt hash into base64. I modified it slightly to use the BCrypt standard. 
-The original code can be found at https://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp/**
-
 This repository holds code that is part of my submission for CS408. The hashing algorithms contained are for research purposes only.
 They should not be used for any real world applications, and have not been tested to the level of standard implementations. 
 This code has been written and tested in Linux and may not be compatible with windows. The binaries provided are compiled for linux. 
 Therefore, it is highly recommended that linux is used to run the binaries or compile the code.
+
+
+**Disclaimer: I did not write the code to encode the bcrypt hash into base64. I modified it slightly to use the BCrypt standard. 
+The original code can be found at https://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp/**
 
 ## Navigating the project's directory
 All of the code related to the project is stored in the "src" directory. The subdirectories inside each contain a single hashing algorithm implementation. 
