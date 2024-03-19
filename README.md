@@ -11,7 +11,7 @@ the ones containing cuda code have cuda in added to the name of the directory. I
 for that specific implementation. </p>
 
 <h2> Running and compiling code </h2>
-<p> I have added compiled binaries in the bin folder of each implementation. These should run without any problems on any linux machine, for the regular C++ code. The cuda implementations require  <br>
+<p> I have added compiled binaries in the bin folder of each implementation. These should run without any problems on any linux machine, for the regular C++ code.  <br> The cuda implementations require  <br>
 a NVIDIA GPU to run. The cuda code was developed using a NVIDIA Geforce GTX 2060 super. Any GPU with the same architecture (Turing) should be able to run the compiled binaries without issue.  <br><br>
 
 <h3> Turing GPUs </h3>
@@ -60,3 +60,8 @@ a NVIDIA GPU to run. The cuda code was developed using a NVIDIA Geforce GTX 2060
     <li>T1200 Laptop</li>
     <li>Tesla T4</li>
 </ul>
+
+<p> Using any of these GPUs to run or compile the code should work without issue.  <br><br>
+with other GPUs running the build scripts provided should produce a working binary.  <br>
+this can be done by running > bash build.sh > in the terminal when in the implementation's root directory.</p.
+
