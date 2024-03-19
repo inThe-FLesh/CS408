@@ -61,7 +61,7 @@ a NVIDIA GPU to run. The cuda code was developed using a NVIDIA Geforce GTX 2060
     <li>Tesla T4</li>
 </ul>
 
-<p> Using any of these GPUs to run or compile the code should work without issue.  <br><br>
-with other GPUs running the build scripts provided should produce a working binary.  <br>
-this can be done by running `bash build.sh` in the terminal when in the implementation's root directory.</p>
+Using any of these GPUs to run or compile the code should work without issue.
+with other GPUs running the build scripts provided should produce a working binary. 
+this can be done by running `bash build.sh` in the terminal when in the implementation's root directory.
 
