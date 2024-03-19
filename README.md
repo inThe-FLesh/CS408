@@ -1,4 +1,5 @@
-# Determining the Suitability of Hashing Algorithms for Password Security Using GPU Acceleration ## - Ross Gray CS408 
+# Determining the Suitability of Hashing Algorithms for Password Security Using GPU Acceleration 
+## - Ross Gray CS408 
 
 This repository holds code that is part of my submission for CS408. The hashing algorithms contained are for research purposes only.
 They should not be used for any real world applications, and have not been tested to the level of standard implementations. 
