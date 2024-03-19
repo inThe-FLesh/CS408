@@ -63,3 +63,11 @@ Using any of these GPUs to run or compile the code should work without issue.
 with other GPUs running the build scripts provided should produce a working binary. 
 this can be done by running `bash build.sh` in the terminal when in the implementation's root directory.
 
+**IMPORTANT**
+to be able to compile cuda code you must have the cuda drivers installed, your GPUs driver, the cuda development toolkit, and / or nvcc. 
+compiling without specifying your architecture can cause issues with code executing on the GPU. 
+
+to specify architecture you would compile using 
+```nvcc -gencode arch=compute_<YOUR ARCHITECTURE NUMBER>,code=sm_<YOUR ARCHITECTURE NUMBER> -rdc=true base64.cu BCrypt.cu -o BCrypt```
+this example uses the BCrypt cuda project as its compile target
+
