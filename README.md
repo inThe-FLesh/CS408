@@ -15,54 +15,48 @@ for that specific implementation. </p>
 a NVIDIA GPU to run. The cuda code was developed using a NVIDIA Geforce GTX 2060 super. Any GPU with the same architecture (Turing) should be able to run the compiled binaries without issue.  <br><br>
 
 <h3> Turing GPUs </h3>
-   <p> -GeForce MX series
-        -GeForce MX450 Laptop
-        -GeForce MX550 Laptop
-    -GeForce 16 series    GeForce MX series
-        -GeForce MX450 Laptop
-        -GeForce MX550 Laptop
-    -GeForce 16 series
-        -GeForce GTX 1630
-        -GeForce GTX 1650 Laptop
-        -GeForce GTX 1650
-        -GeForce GTX 1650 Super
-        -GeForce GTX 1650 Ti Laptop
-        -GeForce GTX 1660
-        -GeForce GTX 1660 Super
-        -GeForce GTX 1660 Ti Laptop
-        -GeForce GTX 1660 Ti
-    -GeForce 20 series
-        -GeForce RTX 2060 Laptop
-        -GeForce RTX 2060
-        -GeForce RTX 2060 Super
-        -GeForce RTX 2070 Laptop
-        -GeForce RTX 2070
-        -GeForce RTX 2070 Super Laptop
-        -GeForce RTX 2070 Super
-        -GeForce RTX 2080 Laptop
-        -GeForce RTX 2080
-        -GeForce RTX 2080 Super Laptop
-        -GeForce RTX 2080 Super
-        -GeForce RTX 2080 Ti
-        -Titan RTX
-    -Nvidia Quadro
-        -Quadro RTX 3000 Laptop
-        -Quadro RTX 4000 Laptop
-        -Quadro RTX 4000
-        -Quadro RTX 5000 Laptop
-        -Quadro RTX 5000
-        -Quadro RTX 6000 Laptop
-        -Quadro RTX 6000
-        -Quadro RTX 8000
-        -Quadro T1000 Laptop
-        -Quadro T2000 Laptop
-        -T400
-        -T400 4GB
-        -T500 Laptop
-        -T600 Laptop
-        -T600
-        -T1000
-        -T1000 8GB
-        -T1200 Laptop
-    -Nvidia Tesla
-        -Tesla T4</p>
+<ul>
+    <li>GeForce MX450 Laptop<li>
+    <li>GeForce MX550 Laptop<li>
+    <li>GeForce GTX 1630<li>
+    <li>GeForce GTX 1650 Laptop<li>
+    <li>GeForce GTX 1650<li>
+    <li>GeForce GTX 1650 Super<li>
+    <li>GeForce GTX 1650 Ti Laptop<li>
+    <li>GeForce GTX 1660<li>
+    <li>GeForce GTX 1660 Super<li>
+    <li>GeForce GTX 1660 Ti Laptop<li>
+    <li>GeForce GTX 1660 Ti<li>
+    <li>GeForce RTX 2060 Laptop<li>
+    <li>GeForce RTX 2060<li>
+    <li>GeForce RTX 2060 Super<li>
+    <li>GeForce RTX 2070 Laptop<li>
+    <li>GeForce RTX 2070<li>
+    <li>GeForce RTX 2070 Super Laptop<li>
+    <li>GeForce RTX 2070 Super<li>
+    <li>GeForce RTX 2080 Laptop<li>
+    <li>GeForce RTX 2080<li>
+    <li>GeForce RTX 2080 Super Laptop<li>
+    <li>GeForce RTX 2080 Super<li>
+    <li>GeForce RTX 2080 Ti<li>
+    <li>Titan RTX<li>
+    <li>Quadro RTX 3000 Laptop<li>
+    <li>Quadro RTX 4000 Laptop<li>
+    <li>Quadro RTX 4000<li>
+    <li>Quadro RTX 5000 Laptop<li>
+    <li>Quadro RTX 5000<li>
+    <li>Quadro RTX 6000 Laptop<li>
+    <li>Quadro RTX 6000<li>
+    <li>Quadro RTX 8000<li>
+    <li>Quadro T1000 Laptop<li>
+    <li>Quadro T2000 Laptop<li>
+    <li>T400<li>
+    <li>T400 4GB<li>
+    <li>T500 Laptop<li>
+    <li>T600 Laptop<li>
+    <li>T600<li>
+    <li>T1000<li>
+    <li>T1000 8GB<li>
+    <li>T1200 Laptop<li>
+    <li>Tesla T4<li>
+</ul>
