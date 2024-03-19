@@ -1,0 +1,10 @@
+/home/ross/Downloads/CLion/clion-2023.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/ross/Downloads/CLion/clion-2023.3.4/bin/ninja/linux/x64/ninja -G Ninja -S /home/ross/Documents/Year4/CS408/CS408/src/BCrypt-Cuda -B /home/ross/Documents/Year4/CS408/CS408/src/BCrypt-Cuda/cmake-build-debug
+-- The CUDA compiler identification is NVIDIA 12.3.107
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /opt/cuda/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Configuring done (1.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ross/Documents/Year4/CS408/CS408/src/BCrypt-Cuda/cmake-build-debug
