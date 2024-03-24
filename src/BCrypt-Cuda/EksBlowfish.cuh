@@ -81,6 +81,11 @@ public:
     }
   }
 
+  uint32_t *getP() { return P; }
+
+  uint32_t **getS() { return S; }
+
+private:
   static uint32_t *fill_with_pi(int length) {
     uint32_t *piArray = (uint32_t *)malloc(sizeof(uint32_t) * length);
     double pi = M_PI;
@@ -96,11 +101,6 @@ public:
     return piArray;
   }
 
-  uint32_t *getP() { return P; }
-
-  uint32_t **getS() { return S; }
-
-private:
   uint32_t cyclePassword(int position) {
     int count = 0;
     uint32_t cycle = 0;
