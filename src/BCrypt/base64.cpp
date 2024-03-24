@@ -41,6 +41,22 @@
 // two sets of base64 characters needs to be chosen.
 // They differ in their last two characters.
 //
+
+/* modified by Ross Gray to meet the Bcrypt base64 standard:
+ * The variables base64_chars values had to be changed to satisfy the requirements of the Bcrypt algorithm
+ * 
+ * Original source code values:
+    static const char* base64_chars[2] = {
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "abcdefghijklmnopqrstuvwxyz"
+                "0123456789"
+                "+/",
+
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "abcdefghijklmnopqrstuvwxyz"
+                "0123456789"
+                "-_"};
+*/
 static const char *base64_chars[2] = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                       "abcdefghijklmnopqrstuvwxyz"
                                       "0123456789"
