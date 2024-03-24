@@ -77,6 +77,17 @@ public:
     }
   }
 
+  ~EksBlowfish() {
+    delete[] saltStorage;
+    delete[] passwordStorage;
+    delete[] zeroSalt;
+  }
+
+  uint32_t *getP() { return P; }
+
+  uint32_t **getS() { return S; }
+
+private:
   // the P and S boxes are initialised with the fractional part of pi
   static uint32_t *fill_with_pi(int length) {
     uint32_t *piArray = (uint32_t *)malloc(sizeof(uint32_t) * length);
@@ -93,17 +104,6 @@ public:
     return piArray;
   }
 
-  ~EksBlowfish() {
-    delete[] saltStorage;
-    delete[] passwordStorage;
-    delete[] zeroSalt;
-  }
-
-  uint32_t *getP() { return P; }
-
-  uint32_t **getS() { return S; }
-
-private:
   // this is used to get 32 bits of password at a time
   // it is treated cylically
   uint32_t cyclePassword(int position) {
