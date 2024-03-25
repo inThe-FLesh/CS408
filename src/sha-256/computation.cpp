@@ -63,19 +63,6 @@ void compute_hash(uint32_t *W, uint32_t *hArr) {
   hArr[7] = h + hArr[7];
 }
 
-uint32_t right_rotation(uint32_t bits, int n) {
-  // modulo 32 to ensure that ot can't ever shift more places than there are
-  // bits
-  n = n % 32;
-
-  // optimised here to do the rotate right in one instruction. Improved hashrate
-  // by roughly 100,000 hashes per second
-
-  uint32_t shiftedBits = (bits >> n) ^ (bits << (32 - n));
-  // uint32_t rotatedBits = bits << (32 - n);
-  return shiftedBits;
-}
-
 uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
 
   uint32_t *schedule = (uint32_t *)malloc(sizeof(uint32_t) * 64);
@@ -97,12 +84,18 @@ uint32_t *prepare_message_schedule(uint32_t *paddedBits) {
   return schedule;
 }
 
-// The formula to derive any value for W at position T
-/*void build_message_schedule(uint32_t *W) {
-  for (int t = 16; t <= 63; t++) {
-    W[t] = sigma_one(W[t - 2]) + W[t - 7] + sigma_zero(W[t - 15]) + (W[t - 16]);
-  }
-}*/
+uint32_t right_rotation(uint32_t bits, int n) {
+  // modulo 32 to ensure that ot can't ever shift more places than there are
+  // bits
+  n = n % 32;
+
+  // optimised here to do the rotate right in one instruction. Improved hashrate
+  // by roughly 100,000 hashes per second
+
+  uint32_t shiftedBits = (bits >> n) ^ (bits << (32 - n));
+  // uint32_t rotatedBits = bits << (32 - n);
+  return shiftedBits;
+}
 
 uint32_t sigma_zero(uint32_t bits) {
   uint32_t sigmaReturn =

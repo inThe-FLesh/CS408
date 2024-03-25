@@ -90,6 +90,7 @@ int main() {
 
   double hashesPerSec = 60.0 / time_taken;
   cout << "Hashes per second: " << hashesPerSec << endl;
+
   // sha(strArr[0]);
   return 0;
 }

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ostream>
 
-/*void fill_with_pi_test() {
+void fill_with_pi_test() {
   uint8_t salt[16] = {};
   uint8_t password[4] = {'R', 'e', 'd', 'B'};
   EksBlowfish eks(0, 4, salt, password);
@@ -16,9 +16,9 @@
   }
 
   uint32_t *piArray = eks.fill_with_pi(S, 18);
-}*/
+}
 
-/*void converter_test() {
+void converter_test() {
   Converter converter;
 
   uint32_t num = 155;
@@ -38,11 +38,11 @@
   std::cout << "split: " << split64[0] << split64[1] << std::endl;
 
   std::cout << "converter output: " << num << " " << num64 << std::endl;
-}*/
+}
 
 void printCycle(uint32_t cycle) { std::cout << std::hex << cycle << std::endl; }
 
-/*void cycle_password_tests() {
+void cycle_password_tests() {
   uint8_t salt[16] = {};
   uint8_t password[4] = {'R', 'e', 'd', 'B'};
   EksBlowfish eks(0, 4, salt, password);
@@ -75,9 +75,9 @@ void printCycle(uint32_t cycle) { std::cout << std::hex << cycle << std::endl; }
 
   assert(output == 0x42526564);
   std::cout << "Test 4 passed." << std::endl;
-}*/
+}
 
-/*void blowfish_tests() {
+void blowfish_tests() {
 
   uint32_t P[18] = {0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822,
                     0x299f31d0, 0x082efa98, 0xec4e6c89, 0x452821e6, 0x38d01377,
@@ -304,11 +304,11 @@ void EksBlowfish_test() {
   for (int i = 0; i < 18; i++) {
     std::cout << std::hex << P[i] << std::endl;
   }
-}*/
+}
 
 int main() {
-  // cycle_password_tests();
-  // blowfish_tests();
-  // converter_test();
-  // fill_with_pi_test();
+  cycle_password_tests();
+  blowfish_tests();
+  converter_test();
+  fill_with_pi_test();
 }

@@ -156,7 +156,7 @@ private:
     return saltHalves;
   }
 
-  // this is the important hashin part that generates the new P and S values
+  // this is the important hashing part that generates the new P and S values
   // from the passwords
   void expand_key() {
     uint8_t *block = new uint8_t[8]();
