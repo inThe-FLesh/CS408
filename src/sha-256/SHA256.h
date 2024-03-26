@@ -6,13 +6,16 @@
 #define CS408_SHA256_H
 #include "computation.h"
 #include "preprocessing.h"
+#include <bits/stdc++.h>
 #include <bitset>
 #include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
+#include <exception>
 #include <iomanip>
 #include <iostream>
+#include <sys/time.h>
 #include <sys/types.h>
 
 using namespace std::chrono;

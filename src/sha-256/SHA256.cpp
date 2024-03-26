@@ -7,12 +7,6 @@
 
 #include "SHA256.h"
 #include "computation.h"
-#include <bits/stdc++.h>
-#include <cstdlib>
-#include <exception>
-#include <ios>
-#include <iostream>
-#include <sys/time.h>
 
 int sha(string str) {
   uint8_t *bits;
